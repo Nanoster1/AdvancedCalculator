@@ -44,6 +44,12 @@ namespace AdvancedCalculator.Logic
                 return true;
             return false;
         }
+        bool CheckFunc(string text)
+        {
+            if (text == "log" || text == "sin" || text == "cos" || text == "tg" || text == "ctg" || text == "ln")
+                return true;
+            return false;
+        }
         string ParseInRPN(string text)
         {
             Stack<string> california = new Stack<string>();
@@ -75,7 +81,7 @@ namespace AdvancedCalculator.Logic
                         texas.Push(text[i].ToString());
                         i++;
                     }
-                    else if (CheckPlusMinus(texas.Peek()) || CheckMultDiv(texas.Peek()) || texas.Peek() == "^" || texas.Peek() == "log"  || texas.Peek() == "sin" || texas.Peek() == "cos" || texas.Peek() == "tg" || texas.Peek() == "ctg")
+                    else if (CheckPlusMinus(texas.Peek()) || CheckMultDiv(texas.Peek()) || texas.Peek() == "^" || CheckFunc(texas.Peek()))
                         california.Push(texas.Pop().ToString());
                     else if (texas.Peek() == "(") 
                     {
@@ -90,7 +96,7 @@ namespace AdvancedCalculator.Logic
                         texas.Push(text[i].ToString());
                         i++;
                     }
-                    else if (CheckMultDiv(texas.Peek()) || texas.Peek() == "^" || texas.Peek() == "log" || texas.Peek() == "sin" || texas.Peek() == "cos" || texas.Peek() == "tg" || texas.Peek() == "ctg")
+                    else if (CheckMultDiv(texas.Peek()) || texas.Peek() == "^" || CheckFunc(texas.Peek()))
                         california.Push(texas.Pop().ToString());
                     else if (texas.Peek() == "(")
                     {
@@ -109,7 +115,7 @@ namespace AdvancedCalculator.Logic
                     {
                         throw new Exception("Некорректная формула");
                     }
-                    else if (CheckPlusMinus(texas.Peek()) || CheckMultDiv(texas.Peek()) || texas.Peek() == "^" || texas.Peek() == "log" || texas.Peek() == "sin" || texas.Peek() == "cos" || texas.Peek() == "tg" || texas.Peek() == "ctg")
+                    else if (CheckPlusMinus(texas.Peek()) || CheckMultDiv(texas.Peek()) || texas.Peek() == "^" || CheckFunc(texas.Peek()))
                         california.Push(texas.Pop().ToString());
                     else if (texas.Peek() == "(")
                     {
@@ -121,7 +127,7 @@ namespace AdvancedCalculator.Logic
                 {
                     if (CheckStartEnd(texas.Peek()))
                         break;
-                    else if (CheckPlusMinus(texas.Peek()) || CheckMultDiv(texas.Peek()) || texas.Peek() == "^" || texas.Peek() == "log" || texas.Peek() == "sin" || texas.Peek() == "cos" || texas.Peek() == "tg" || texas.Peek() == "ctg")
+                    else if (CheckPlusMinus(texas.Peek()) || CheckMultDiv(texas.Peek()) || texas.Peek() == "^" || CheckFunc(texas.Peek()))
                         california.Push(texas.Pop().ToString());
                     else if (texas.Peek() == "(")                                                                           //ошибка
                     {
