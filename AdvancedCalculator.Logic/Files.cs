@@ -14,14 +14,21 @@ namespace AdvancedCalculator.Logic
         static List<Calculator> Calculators { get; set; } = SetCalcs(Function);
         static List<Calculator> SetCalcs(string function)
         {
-            List<Calculator> calculators = new List<Calculator>();
-            for (int i = 0; i < Range.Count; i++)
+            try
             {
-                string a = Range[i].ToString();
-                Calculator calculator = new Calculator(function.Replace("x", a));
-                calculators.Add(calculator);
+                List<Calculator> calculators = new List<Calculator>();
+                for (int i = 0; i < Range.Count; i++)
+                {
+                    string a = Range[i].ToString();
+                    Calculator calculator = new Calculator(function.Replace("x", a));
+                    calculators.Add(calculator);
+                }
+                return calculators;
             }
-            return calculators;
+            catch
+            {
+                return new List<Calculator>();
+            }
         }
         static List<int> SetRange()
         {
@@ -36,20 +43,24 @@ namespace AdvancedCalculator.Logic
         } 
         public static void WriteOutput()
         {
-            List<string> output = new List<string>();
-            output.Add("ОПЗ:");
-            for (int i = 0; i < Range.Count; i++)
+            if (Calculators.Count == 0) 
+                File.WriteAllText(Output.FullName, "Некорректная формула");
+            else 
             {
-                output.Add($"x = {Range[i].ToString()}            {Calculators[i].RPNStr}");
+                List<string> output = new List<string>();
+                output.Add("ОПЗ:");
+                for (int i = 0; i < Range.Count; i++)
+                {
+                    output.Add($"x = {Range[i].ToString()}            {Calculators[i].RPNStr}");
+                }
+                output.Add(" ");
+                output.Add("Значения функции:");
+                for (int i = 0; i < Range.Count; i++)
+                {
+                    output.Add($"x = {Range[i].ToString()}            {Calculators[i].Answer}");
+                }
+                File.WriteAllLines(Output.FullName, output); 
             }
-            output.Add(" ");
-            output.Add("Значения функции:");
-
-            for (int i = 0; i < Range.Count; i++)
-            {
-                output.Add($"x = {Range[i].ToString()}            {Calculators[i].Answer}");
-            }
-            File.WriteAllLines(Output.FullName, output);
         }
     }
 }
