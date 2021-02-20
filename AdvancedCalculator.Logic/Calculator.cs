@@ -9,6 +9,38 @@ namespace AdvancedCalculator.Logic
         string[] RPNAr { get; set; }
         public string RPNStr { get; private set; }
         public double Answer { get; private set; } = 0;
+        public Operation ChooseOp(string sym)
+        {
+            Operation op = null;
+            switch (sym)
+            {
+                case ("+"):
+                    op = new Plus();
+                    break;
+                case ("-"):
+                    op = new Minus();
+                    break;
+                case ("*"):
+                    op = new Mult();
+                    break;
+                case ("/"):
+                    op = new Div();
+                    break;
+                case ("log"):
+                    op = new Log();
+                    break;
+                case ("sin"):
+                    op = new Sin();
+                    break;
+                case ("cos"):
+                    op = new Cos();
+                    break;
+                case ("tg"):
+                    op = new Tg();
+                    break;
+            }
+            return op;
+        }
         public Calculator(string text)
         {
             RPNStr = ParseInRPN(text);
@@ -169,20 +201,17 @@ namespace AdvancedCalculator.Logic
                     calc.Push(RPNAr[i]);
                 else
                 {
-                    double x2 = Convert.ToDouble(calc.Pop());
-                    double x1 = Convert.ToDouble(calc.Pop());
-                    if (RPNAr[i] == "+")
-                        calc.Push((x1 + x2).ToString());
-                    else if (RPNAr[i] == "-")
-                        calc.Push((x1 - x2).ToString());
-                    else if (RPNAr[i] == "*")
-                        calc.Push((x1 * x2).ToString());
-                    else if (RPNAr[i] == "/")
-                        calc.Push((x1 / x2).ToString());
-                    else if (RPNAr[i] == "^")
-                        calc.Push((Math.Pow(x1, x2)).ToString());
-                    else if (RPNAr[i] == "log")
-                        calc.Push((Math.Log(x2, x1).ToString()));
+                    Operation op = ChooseOp(RPNAr[i]);
+                    if (op.CountParams == 2)
+                    {
+                        double[] @params = { double.Parse(calc.Pop()), double.Parse(calc.Pop()) };  //x2 , x1
+                        calc.Push(op.Calculate(@params).ToString());
+                    }
+                    else
+                    {
+                        double[] @params = { double.Parse(calc.Pop()) };
+                        calc.Push(op.Calculate(@params).ToString());
+                    }
                 }
             }
             return double.Parse(calc.Pop());
