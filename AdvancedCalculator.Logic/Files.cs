@@ -25,7 +25,7 @@ namespace AdvancedCalculator.Logic
                 }
                 return calculators;
             }
-            catch
+            catch(Exception ex)
             {
                 return new List<Calculator>();
             }

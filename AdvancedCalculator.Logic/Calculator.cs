@@ -16,7 +16,7 @@ namespace AdvancedCalculator.Logic
         }
         bool CheckDigit(string text)                       //Проверяем на число
         {
-            if (int.TryParse(text, out _))
+            if (double.TryParse(text, out _))
                 return true;
             return false;
         }
@@ -54,7 +54,7 @@ namespace AdvancedCalculator.Logic
                 else if (CheckDigit(text[i].ToString()))                                                            //Если число
                 {
                     StringBuilder num = new StringBuilder().Append(text[i]);
-                    while (CheckDigit(text[i + 1].ToString()))                                                     
+                    while (CheckDigit(text[i + 1].ToString()) || text[i + 1] == ',')                                                     
                     {
                         i++;
                         num.Append(text[i]);
@@ -69,7 +69,7 @@ namespace AdvancedCalculator.Logic
                         texas.Push(text[i]);
                         i++;
                     }
-                    else if (CheckPlusMinus(texas.Peek()) || CheckMultDiv(texas.Peek()))
+                    else if (CheckPlusMinus(texas.Peek()) || CheckMultDiv(texas.Peek()) || texas.Peek() == '^')
                         california.Push(texas.Pop().ToString());
                     else if (texas.Peek() == '(') 
                     {
@@ -84,7 +84,7 @@ namespace AdvancedCalculator.Logic
                         texas.Push(text[i]);
                         i++;
                     }
-                    else if (CheckMultDiv(texas.Peek()))
+                    else if (CheckMultDiv(texas.Peek()) || texas.Peek() == '^')
                         california.Push(texas.Pop().ToString());
                     else if (texas.Peek() == '(')
                     {
@@ -99,11 +99,11 @@ namespace AdvancedCalculator.Logic
                 }
                 else if (text[i] == ')')
                 {
-                    if (CheckStartEnd(texas.Peek())) //ошибка
+                    if (CheckStartEnd(texas.Peek()))                                                                        //ошибка
                     {
                         throw new Exception("Некорректная формула");
                     }
-                    else if (CheckPlusMinus(texas.Peek()) || CheckMultDiv(texas.Peek()))
+                    else if (CheckPlusMinus(texas.Peek()) || CheckMultDiv(texas.Peek()) || texas.Peek() == '^')
                     {
                         california.Push(texas.Pop().ToString());
                     }
@@ -117,11 +117,19 @@ namespace AdvancedCalculator.Logic
                 {
                     if (CheckStartEnd(texas.Peek()))
                         break;
-                    else if (CheckPlusMinus(texas.Peek()) || CheckMultDiv(texas.Peek()))
+                    else if (CheckPlusMinus(texas.Peek()) || CheckMultDiv(texas.Peek()) || texas.Peek() == '^')
                         california.Push(texas.Pop().ToString());
-                    else if (texas.Peek() == '(')  //ошибка
+                    else if (texas.Peek() == '(')                                                                           //ошибка
                     {
                         throw new Exception("Некорректная формула");
+                    }
+                }
+                else if (text[i] == '^')
+                {
+                    if (CheckPlusMinus(texas.Peek()) || CheckMultDiv(texas.Peek()) || texas.Peek() == '(' || CheckStartEnd(texas.Peek()))
+                    {
+                        texas.Push(text[i]);
+                        i++;
                     }
                 }
             }                                                                          
@@ -141,16 +149,18 @@ namespace AdvancedCalculator.Logic
                     calc.Push(RPNAr[i]);
                 else
                 {
-                    double x2 = double.Parse(calc.Pop());
-                    double x1 = double.Parse(calc.Pop());
+                    double x2 = Convert.ToDouble(calc.Pop());
+                    double x1 = Convert.ToDouble(calc.Pop());
                     if (RPNAr[i] == "+")
                         calc.Push((x1 + x2).ToString());
                     else if (RPNAr[i] == "-")
                         calc.Push((x1 - x2).ToString());
                     else if (RPNAr[i] == "*")
                         calc.Push((x1 * x2).ToString());
-                    else
+                    else if (RPNAr[i] == "/")
                         calc.Push((x1 / x2).ToString());
+                    else
+                        calc.Push((Math.Pow(x1, x2)).ToString());
                 }
             }
             return double.Parse(calc.Pop());
