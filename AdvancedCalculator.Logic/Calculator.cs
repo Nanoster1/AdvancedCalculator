@@ -99,7 +99,10 @@ namespace AdvancedCalculator.Logic
                 }
                 else if (text[i] == ')')
                 {
-                    if (CheckStartEnd(texas.Peek())) { }//ошибка
+                    if (CheckStartEnd(texas.Peek())) //ошибка
+                    {
+                        throw new Exception("Некорректная формула");
+                    }
                     else if (CheckPlusMinus(texas.Peek()) || CheckMultDiv(texas.Peek()))
                     {
                         california.Push(texas.Pop().ToString());
@@ -116,8 +119,10 @@ namespace AdvancedCalculator.Logic
                         break;
                     else if (CheckPlusMinus(texas.Peek()) || CheckMultDiv(texas.Peek()))
                         california.Push(texas.Pop().ToString());
-                    //else if (texas.Peek() == '(') ; //ошибка
-
+                    else if (texas.Peek() == '(')  //ошибка
+                    {
+                        throw new Exception("Некорректная формула");
+                    }
                 }
             }                                                                          
             RPNAr = california.ToArray();
