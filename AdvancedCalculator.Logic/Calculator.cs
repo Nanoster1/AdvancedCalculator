@@ -20,35 +20,41 @@ namespace AdvancedCalculator.Logic
                 return true;
             return false;
         }
-        bool CheckPlusMinus(char text)                                //Проверяем на операнды +-
+        bool CheckPlusMinus(string text)                                //Проверяем на операнды +-
         {
-            if ("+-".Contains(text.ToString()))
+            if ("+-".Contains(text))
                 return true;
             return false;
         }
-        bool CheckMultDiv(char text)                                //Проверяем на операнды */
+        bool CheckMultDiv(string text)                                //Проверяем на операнды */
         {
-            if ("*/".Contains(text.ToString()))
+            if ("*/".Contains(text))
                 return true;
             return false;
         }
-        bool CheckStartEnd(char text)                                //Проверяем на символ начала/конца выражения
+        bool CheckStartEnd(string text)                                //Проверяем на символ начала/конца выражения
         {
-            if (text == '⊥')
+            if (text == "⊥")
+                return true;
+            return false;
+        }
+        bool CheckLetter(string text)
+        {
+            if (!CheckDigit(text.ToString()) && !CheckMultDiv(text) && !CheckPlusMinus(text) && !CheckStartEnd(text) && text != "(" && text != ")" && text != "^")
                 return true;
             return false;
         }
         string ParseInRPN(string text)
         {
             Stack<string> california = new Stack<string>();
-            Stack<char> texas = new Stack<char>();
+            Stack<string> texas = new Stack<string>();
             StringBuilder output = new StringBuilder();
             int i = 0;
             while (true)
             {
                 if (i == 0)
                 {
-                    texas.Push(text[i]);                                                                
+                    texas.Push(text[i].ToString());                                                                
                     i++;
                 }
                 else if (CheckDigit(text[i].ToString()))                                                            //Если число
@@ -62,39 +68,39 @@ namespace AdvancedCalculator.Logic
                     california.Push(num.ToString());
                     i++;
                 }
-                else if (CheckPlusMinus(text[i]))                                                       //Если +-
+                else if (CheckPlusMinus(text[i].ToString()))                                                       //Если +-
                 {
                     if (CheckStartEnd(texas.Peek()))
                     {
-                        texas.Push(text[i]);
+                        texas.Push(text[i].ToString());
                         i++;
                     }
-                    else if (CheckPlusMinus(texas.Peek()) || CheckMultDiv(texas.Peek()) || texas.Peek() == '^')
+                    else if (CheckPlusMinus(texas.Peek()) || CheckMultDiv(texas.Peek()) || texas.Peek() == "^" || texas.Peek() == "log"  || texas.Peek() == "sin" || texas.Peek() == "cos" || texas.Peek() == "tg" || texas.Peek() == "ctg")
                         california.Push(texas.Pop().ToString());
-                    else if (texas.Peek() == '(') 
+                    else if (texas.Peek() == "(") 
                     {
-                        texas.Push(text[i]);
+                        texas.Push(text[i].ToString());
                         i++;
                     }
                 }
-                else if (CheckMultDiv(text[i]))                                                          //Если */
+                else if (CheckMultDiv(text[i].ToString()))                                                          //Если */
                 {
                     if (CheckStartEnd(texas.Peek()) || CheckPlusMinus(texas.Peek()))
                     {
-                        texas.Push(text[i]);
+                        texas.Push(text[i].ToString());
                         i++;
                     }
-                    else if (CheckMultDiv(texas.Peek()) || texas.Peek() == '^')
+                    else if (CheckMultDiv(texas.Peek()) || texas.Peek() == "^" || texas.Peek() == "log" || texas.Peek() == "sin" || texas.Peek() == "cos" || texas.Peek() == "tg" || texas.Peek() == "ctg")
                         california.Push(texas.Pop().ToString());
-                    else if (texas.Peek() == '(')
+                    else if (texas.Peek() == "(")
                     {
-                        texas.Push(text[i]);
+                        texas.Push(text[i].ToString());
                         i++;
                     }
                 }
                 else if (text[i] == '(')
                 {
-                    texas.Push(text[i]);
+                    texas.Push(text[i].ToString());
                     i++;
                 }
                 else if (text[i] == ')')
@@ -103,40 +109,48 @@ namespace AdvancedCalculator.Logic
                     {
                         throw new Exception("Некорректная формула");
                     }
-                    else if (CheckPlusMinus(texas.Peek()) || CheckMultDiv(texas.Peek()) || texas.Peek() == '^')
-                    {
+                    else if (CheckPlusMinus(texas.Peek()) || CheckMultDiv(texas.Peek()) || texas.Peek() == "^" || texas.Peek() == "log" || texas.Peek() == "sin" || texas.Peek() == "cos" || texas.Peek() == "tg" || texas.Peek() == "ctg")
                         california.Push(texas.Pop().ToString());
-                    }
-                    else if (texas.Peek() == '(')
+                    else if (texas.Peek() == "(")
                     {
                         texas.Pop();
                         i++;
                     }
                 }
-                else if (CheckStartEnd(text[i]))
+                else if (CheckStartEnd(text[i].ToString()))
                 {
                     if (CheckStartEnd(texas.Peek()))
                         break;
-                    else if (CheckPlusMinus(texas.Peek()) || CheckMultDiv(texas.Peek()) || texas.Peek() == '^')
+                    else if (CheckPlusMinus(texas.Peek()) || CheckMultDiv(texas.Peek()) || texas.Peek() == "^" || texas.Peek() == "log" || texas.Peek() == "sin" || texas.Peek() == "cos" || texas.Peek() == "tg" || texas.Peek() == "ctg")
                         california.Push(texas.Pop().ToString());
-                    else if (texas.Peek() == '(')                                                                           //ошибка
+                    else if (texas.Peek() == "(")                                                                           //ошибка
                     {
                         throw new Exception("Некорректная формула");
                     }
                 }
                 else if (text[i] == '^')
                 {
-                    if (CheckPlusMinus(texas.Peek()) || CheckMultDiv(texas.Peek()) || texas.Peek() == '(' || CheckStartEnd(texas.Peek()))
+                    texas.Push(text[i].ToString());
+                    i++;
+                }
+                else if (CheckLetter(text[i].ToString()))
+                {
+                    StringBuilder func = new StringBuilder().Append(text[i]);
+                    while (CheckLetter(text[i + 1].ToString()))
                     {
-                        texas.Push(text[i]);
                         i++;
+                        func.Append(text[i]);
                     }
+                    texas.Push(func.ToString());
+                    i++;
                 }
             }                                                                          
             RPNAr = california.ToArray();
-            while (california.Count != 0)
+            List<string> outputs = new List<string>(california);
+            outputs.Reverse();
+            for (int k = 0; k < outputs.Count; k++)
             {
-                output.Append(california.Pop() + " ");
+                output.Append(outputs[k] + " ");
             }
             return output.ToString();
         }
@@ -159,8 +173,10 @@ namespace AdvancedCalculator.Logic
                         calc.Push((x1 * x2).ToString());
                     else if (RPNAr[i] == "/")
                         calc.Push((x1 / x2).ToString());
-                    else
+                    else if (RPNAr[i] == "^")
                         calc.Push((Math.Pow(x1, x2)).ToString());
+                    else if (RPNAr[i] == "log")
+                        calc.Push((Math.Log(x2, x1).ToString()));
                 }
             }
             return double.Parse(calc.Pop());
