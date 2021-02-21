@@ -1,14 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Linq;
 
 namespace AdvancedCalculator.Logic
 {
     public class Calculator
     {
-        object[] RPNAr { get; set; }
+        public object[] RPNAr { get; private set; }
         public string RPNStr { get; private set; }
         public double Answer { get; private set; }
+        public Calculator(string text)
+        {
+            RPNAr = GetRPN(text);
+            RPNStr = GetRPNStr();
+            Answer = GetAnswer();
+        }
         public object[] GetRPN(string text)
         {
             List<object> expression = ParseExpression(text);
@@ -17,7 +24,7 @@ namespace AdvancedCalculator.Logic
         List<object> ParseExpression(string text)                                                              //Парсим выражение в лист объектов
         {
             List<object> expression = new List<object>();
-            for (int i = 0; i < text.Length; i++)
+            for (int i = 0; i < text.Length; i++)                   // |23,4+3/45|
             {
                 if (CheckDigit(text[i].ToString()))                                                            //Если число
                 {
@@ -31,10 +38,10 @@ namespace AdvancedCalculator.Logic
                 }
                 else if (CheckLeftBracket(text[i]) || CheckRightBracket(text[i]) || CheckStartEnd(text[i]))
                     expression.Add(text[i].ToString());
-                else if ("lsct+".Contains(text[i]))
+                else if ("lsct".Contains(text[i]))
                 {
                     StringBuilder oper = new StringBuilder().Append(text[i]);
-                    while(!(CheckDigit(text[i + 1].ToString())) && !"-/*^()".Contains(text[i + 1]))
+                    while(!(CheckDigit(text[i + 1].ToString())) && !"+-/*^()".Contains(text[i + 1]) && !char.IsWhiteSpace(text[i + 1]))
                     {
                         i++;
                         oper.Append(text[i]);
@@ -52,98 +59,29 @@ namespace AdvancedCalculator.Logic
             }
             return expression;
         }
-        object[] ParseInRPN(List<object> expression)
+        bool CheckDigit(string text)                       //Проверяем на число
         {
-            Stack<object> california = new Stack<object>();
-            Stack<object> texas = new Stack<object>();
-            int i = 0;
-            while (true)
-            {
-                if (i == 0) 
-                {
-                    texas.Push(expression[i]);
-                    i++;
-                }
-                else if (CheckStartEnd(expression[i]))                      //Убрать в конец
-                {
-                    if (texas.Peek() is Operation)
-                        california.Push(texas.Pop());
-                    else if (CheckLeftBracket(texas.Peek()))                                                                           //ошибка
-                        throw new Exception("Левая скобка в конце выражения");
-                    else
-                        break;
-                }
-                else if (expression[i] is double)
-                {
-                    california.Push(expression[i]);
-                    i++;
-                }
-                else if (CheckLeftBracket(expression[i]))             //хз работает ли
-                {
-                    texas.Push(expression[i]);
-                    i++;
-                }
-                else if (CheckRightBracket(expression[i]))
-                { 
-                    if (texas.Peek() is Operation)
-                        california.Push(texas.Pop());
-                    else if (CheckLeftBracket(texas.Peek()))                                                       
-                    {
-                        texas.Pop();
-                        i++;
-                    }
-                    else
-                        throw new Exception("Некорректная формула");
-                }
-                else if (expression[i] is Operation)
-                {
-                    switch((expression[i] as Operation).Prior)
-                    {
-                        case (1):
-                            texas.Push(expression[i]);
-                            i++;
-                            break;
-                        case (2):
-                            if ((texas.Peek() is Operation) == false || (texas.Peek() as Operation).Prior == 3)
-                            {
-                                texas.Push(expression[i]);
-                                i++;
-                            }
-                            else if ((texas.Peek() as Operation).Prior < 3)
-                                california.Push(texas.Pop());
-                            break;
-                        case (3):
-                            if (texas.Peek() is Operation)
-                                california.Push(texas.Pop());
-                            else
-                            {
-                                texas.Push(expression[i]);
-                                i++;
-                            }
-                            break;
-                    }
-                }
-            }
-            return california.ToArray();
+            if (double.TryParse(text, out _))
+                return true;
+            return false;
         }
-        string GetRPNStr()
+        bool CheckStartEnd(object text)                                //Проверяем на символ начала/конца выражения
         {
-            StringBuilder @string = new StringBuilder();
-            for (int i = RPNAr.Length - 1; i > 0; i--)
-            {
-                if (RPNAr[i] is Operation)
-                    @string.Append((RPNAr[i] as Operation).Name + " ");
-                else
-                    @string.Append(RPNAr[i].ToString() + " ");
-            }
-            @string.Append((RPNAr[0] as Operation).Name);
-            return @string.ToString();
+            if (text.ToString() == "⊥")
+                return true;
+            return false;
         }
-        public Calculator(string text)
+        bool CheckLeftBracket(object text)
         {
-            RPNAr = GetRPN(text);
-            RPNStr = GetRPNStr();
-            Answer = GetAnswer();
+            if (text.ToString() == "(")
+                return true;
+            return false;
+        }
+        bool CheckRightBracket(object text)
+        {
+            if (text.ToString() == ")")
+                return true;
+            return false;
         }
         public Operation ChooseOp(object sym)
         {
@@ -183,30 +121,92 @@ namespace AdvancedCalculator.Logic
             }
             return op;
         }
-        
-        bool CheckDigit(string text)                       //Проверяем на число
+        object[] ParseInRPN(List<object> expression)
         {
-            if (double.TryParse(text, out _))
-                return true;
-            return false;
+            Stack<object> california = new Stack<object>();
+            Stack<object> texas = new Stack<object>();
+            int i = 0;
+            while (true)
+            {
+                if (i == 0)                                                     //Символ начала строки идёт сразу во 2-й стек 
+                {
+                    texas.Push(expression[i]);
+                    i++;
+                }
+                else if (expression[i] is double)
+                {
+                    california.Push(expression[i]);
+                    i++;
+                }
+                else if (CheckLeftBracket(expression[i]))   
+                {
+                    texas.Push(expression[i]);
+                    i++;
+                }
+                else if (CheckRightBracket(expression[i]))
+                { 
+                    if (texas.Peek() is Operation)
+                        california.Push(texas.Pop());
+                    else if (CheckLeftBracket(texas.Peek()))                                                       
+                    {
+                        texas.Pop();
+                        i++;
+                    }
+                    else
+                        throw new Exception("Некорректная формула");
+                }
+                else if (expression[i] is Operation)
+                {
+                    switch((expression[i] as Operation).Prior)
+                    {
+                        case (1):
+                            texas.Push(expression[i]);
+                            i++;
+                            break;
+                        case (2):
+                            if (!(texas.Peek() is Operation) || (texas.Peek() as Operation).Prior == 3)
+                            {
+                                texas.Push(expression[i]);
+                                i++;
+                            }
+                            else
+                                california.Push(texas.Pop());
+                            break;
+                        case (3):
+                            if (texas.Peek() is Operation)
+                                california.Push(texas.Pop());
+                            else
+                            {
+                                texas.Push(expression[i]);
+                                i++;
+                            }
+                            break;
+                    }
+                }
+                else if (CheckStartEnd(expression[i]))                      
+                {
+                    if (texas.Peek() is Operation)
+                        california.Push(texas.Pop());
+                    else if (CheckLeftBracket(texas.Peek()))                                                                           //ошибка
+                        throw new Exception("Левая скобка в конце выражения");
+                    else
+                        break;
+                }
+            }
+            return california.ToArray();
         }
-        bool CheckStartEnd(object text)                                //Проверяем на символ начала/конца выражения
+        string GetRPNStr()
         {
-            if (text.ToString() == "⊥")
-                return true;
-            return false;
-        }
-        bool CheckLeftBracket(object text)
-        {
-            if (text.ToString() == "(")
-                return true;
-            return false;
-        }
-        bool CheckRightBracket(object text)
-        {
-            if (text.ToString() == ")")
-                return true;
-            return false;
+            StringBuilder @string = new StringBuilder();
+            for (int i = RPNAr.Length - 1; i > 0; i--)
+            {
+                if (RPNAr[i] is Operation)
+                    @string.Append((RPNAr[i] as Operation).Name + " ");
+                else
+                    @string.Append(RPNAr[i].ToString() + " ");
+            }
+            @string.Append((RPNAr[0] as Operation).Name);
+            return @string.ToString();
         }
         double GetAnswer()
         {

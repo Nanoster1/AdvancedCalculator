@@ -7,8 +7,7 @@ namespace AdvancedCalculator.Logic
 {
     public class Files
     {
-        public static FileInfo Output { get; private set; } = new FileInfo(Environment.CurrentDirectory + "\\Output.txt");
-        public static FileInfo Text { get; private set; } = new FileInfo(Environment.CurrentDirectory + "\\Text.txt");
+        public static string[] Text { get; private set; } = File.ReadAllLines(Environment.CurrentDirectory + "\\Text.txt");
         public static List<int> Range { get; private set; } = SetRange();
         public static string Function { get; private set; } = "⊥" + File.ReadAllLines(Text.FullName)[1] + "⊥";
         static List<Calculator> Calculators { get; set; } = SetCalcs(Function);
@@ -32,7 +31,7 @@ namespace AdvancedCalculator.Logic
         }
         static List<int> SetRange()
         {
-            string[] info = File.ReadAllLines(Text.FullName)[0].Split(" ");
+            string[] info = Text[0].Split(" ");
             int range = int.Parse(info[2]) - int.Parse(info[0]) + 1;
             List<int> ar = new List<int>();
             for (int i = 0; i < range; i++)
@@ -43,12 +42,12 @@ namespace AdvancedCalculator.Logic
         } 
         public static void WriteOutput()
         {
+            string path = Environment.CurrentDirectory + "\\Output.txt";
             if (Calculators.Count == 0) 
-                File.WriteAllText(Output.FullName, "Некорректная формула");
+                File.WriteAllText(path, "Некорректная формула");
             else 
             {
-                List<string> output = new List<string>();
-                output.Add("ОПЗ:");
+                List<string> output = new List<string>() { "ОПЗ:" };
                 for (int i = 0; i < Range.Count; i++)
                 {
                     output.Add($"x = {Range[i].ToString()}            {Calculators[i].RPNStr}");
@@ -57,9 +56,9 @@ namespace AdvancedCalculator.Logic
                 output.Add("Значения функции:");
                 for (int i = 0; i < Range.Count; i++)
                 {
-                    output.Add($"x = {Range[i].ToString()}            {Calculators[i].Answer}");
+                    output.Add($"x = {Range[i]}            {Calculators[i].Answer}");
                 }
-                File.WriteAllLines(Output.FullName, output); 
+                File.WriteAllLines(path, output); 
             }
         }
     }
