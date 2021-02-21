@@ -31,7 +31,18 @@ namespace AdvancedCalculator.Logic
                 }
                 else if (CheckLeftBracket(text[i]) || CheckRightBracket(text[i]) || CheckStartEnd(text[i]))
                     expression.Add(text[i].ToString());
-                else if ("lsct+-/*".Contains(text[i]))
+                else if ("lsct+".Contains(text[i]))
+                {
+                    StringBuilder oper = new StringBuilder().Append(text[i]);
+                    while(!(CheckDigit(text[i + 1].ToString())) && !"-/*^()".Contains(text[i + 1]))
+                    {
+                        i++;
+                        oper.Append(text[i]);
+                    }
+                    Operation op = ChooseOp(oper);
+                    expression.Add(op);
+                }
+                else if ("-/*^".Contains(text[i]))
                 {
                     Operation op = ChooseOp(text[i]);
                     expression.Add(op);
@@ -151,17 +162,23 @@ namespace AdvancedCalculator.Logic
                 case ("/"):
                     op = new Div();
                     break;
-                case ("l"):
+                case ("log"):
                     op = new Log();
                     break;
-                case ("s"):
+                case ("sin"):
                     op = new Sin();
                     break;
-                case ("c"):
+                case ("cos"):
                     op = new Cos();
                     break;
-                case ("t"):
+                case ("tg"):
                     op = new Tan();
+                    break;
+                case ("^"):
+                    op = new Rank();
+                    break;
+                case ("sqrt"):
+                    op = new Sqrt();
                     break;
             }
             return op;

@@ -67,4 +67,18 @@ namespace AdvancedCalculator.Logic
         public override double Calculate(double[] @params) { return Math.Tan(@params[0]); }
         public override int Prior => 1;
     }
+    class Rank: Operation
+    {
+        public override string Name => "^";
+        public override int CountParams => 2;
+        public override double Calculate(double[] @params) { return Math.Pow(@params[1], @params[0]); }
+        public override int Prior => 1;
+    }
+    class Sqrt : Operation
+    {
+        public override string Name => "sqrt";
+        public override int CountParams => 1;
+        public override double Calculate(double[] @params) { return Math.Sqrt(@params[0]); }
+        public override int Prior => 1;
+    }
 }
