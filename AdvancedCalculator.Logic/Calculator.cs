@@ -24,44 +24,44 @@ namespace AdvancedCalculator.Logic
         List<object> ParseExpression(string text)                                                              //Парсим выражение в лист объектов
         {
             List<object> expression = new List<object>();
-            for (int i = 0; i < text.Length; i++)                   // |23,4+3/45|
+            for (int i = 0; i < text.Length; i++)                   
             {
-                if (CheckDigit(text[i].ToString()))                                                            //Если число
-                {
-                    StringBuilder num = new StringBuilder().Append(text[i]);
-                    while (CheckDigit(text[i + 1].ToString()) || text[i + 1] == ',')
-                    {
-                        i++;
-                        num.Append(text[i]);
-                    }
-                    expression.Add(double.Parse(num.ToString()));
-                }
+                if (CheckDigit(text[i]) || (text[i] == '-' && !CheckDigit(text[i - 1]) && text[i - 1] != ')'))                                                            //Если число
+                    expression.Add(ReadNumber(text, ref i));
                 else if (CheckLeftBracket(text[i]) || CheckRightBracket(text[i]) || CheckStartEnd(text[i]))
                     expression.Add(text[i].ToString());
-                else if ("lsct".Contains(text[i]))
-                {
-                    StringBuilder oper = new StringBuilder().Append(text[i]);
-                    while(!(CheckDigit(text[i + 1].ToString())) && !"+-/*^()".Contains(text[i + 1]) && !char.IsWhiteSpace(text[i + 1]))
-                    {
-                        i++;
-                        oper.Append(text[i]);
-                    }
-                    Operation op = ChooseOp(oper);
-                    expression.Add(op);
-                }
-                else if ("-/*^".Contains(text[i]))
-                {
-                    Operation op = ChooseOp(text[i]);
-                    expression.Add(op);
-                }
+                else if (char.IsWhiteSpace(text[i]))
+                    i++;
                 else
-                    continue;
+                {
+                    expression.Add(ReadOperation(text, ref i));
+                }
             }
             return expression;
         }
-        bool CheckDigit(string text)                       //Проверяем на число
+        double ReadNumber(string text, ref int i)
         {
-            if (double.TryParse(text, out _))
+            StringBuilder num = new StringBuilder().Append(text[i]);
+            while (CheckDigit(text[i + 1]) || text[i + 1] == ',')
+            {
+                i++;
+                num.Append(text[i]);
+            }
+            return double.Parse(num.ToString());
+        }
+        Operation ReadOperation(string text, ref int i)
+        {
+            StringBuilder @string = new StringBuilder().Append(text[i]);
+            while (!CheckDigit(text[i + 1]) && text[i + 1] != '(' && text[i + 1] != ')')
+            {
+                i++;
+                @string.Append(text[i]);
+            }
+            return ChooseOp(@string.ToString());
+        }
+        bool CheckDigit(char text)                       //Проверяем на число
+        {
+            if (double.TryParse(text.ToString(), out _))
                 return true;
             return false;
         }

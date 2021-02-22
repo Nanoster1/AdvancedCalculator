@@ -9,7 +9,7 @@ namespace AdvancedCalculator.Logic
     {
         public static string[] Text { get; private set; } = File.ReadAllLines(Environment.CurrentDirectory + "\\Text.txt");
         public static List<int> Range { get; private set; } = SetRange();
-        public static string Function { get; private set; } = "⊥" + File.ReadAllLines(Text.FullName)[1] + "⊥";
+        public static string Function { get; private set; } = "⊥" + Text[1] + "⊥";
         static List<Calculator> Calculators { get; set; } = SetCalcs(Function);
         static List<Calculator> SetCalcs(string function)
         {
@@ -50,7 +50,7 @@ namespace AdvancedCalculator.Logic
                 List<string> output = new List<string>() { "ОПЗ:" };
                 for (int i = 0; i < Range.Count; i++)
                 {
-                    output.Add($"x = {Range[i].ToString()}            {Calculators[i].RPNStr}");
+                    output.Add($"x = {Range[i]}            {Calculators[i].RPNStr}");
                 }
                 output.Add(" ");
                 output.Add("Значения функции:");
