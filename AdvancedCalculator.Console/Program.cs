@@ -8,7 +8,8 @@
     {
         static void Main()
         {
-            Files.WriteOutput();
+            Files files = new Files();
+            files.WriteOutput();
         }
     }
 }

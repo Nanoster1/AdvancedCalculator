@@ -7,11 +7,35 @@ namespace AdvancedCalculator.Logic
 {
     public class Files
     {
-        public static string[] Text { get; private set; } = File.ReadAllLines(Environment.CurrentDirectory + "\\Text.txt");
-        public static List<int> Range { get; private set; } = SetRange();
-        public static string Function { get; private set; } = "⊥" + Text[1] + "⊥";
-        static List<Calculator> Calculators { get; set; } = SetCalcs(Function);
-        static List<Calculator> SetCalcs(string function)
+        string[] Text { get; set; }
+        List<double> Range { get; set; }
+        string Function { get; set; }
+        List<Calculator> Calculators { get; set; }
+        double Step { get; set; }
+        public Files(string[] text)
+        {
+            string path = Environment.CurrentDirectory + "\\Text.txt";
+            File.AppendAllLines(path, text);
+            Text = File.ReadAllLines(path);
+            Function = "⊥" + Text[1] + "⊥";
+            Step = SetStep();
+            Range = SetRange();
+            Calculators = SetCalcs(Function);
+        }
+        public Files()
+        {
+             string path = Environment.CurrentDirectory + "\\Text.txt";
+            Text = File.ReadAllLines(path);
+            Function = "⊥" + Text[1] + "⊥";
+            Step = SetStep();
+            Range = SetRange();
+            Calculators = SetCalcs(Function);
+        }
+        double SetStep()
+        {
+            return double.Parse(Text[2]);
+        }
+        List<Calculator> SetCalcs(string function)
         {
             try
             {
@@ -29,18 +53,18 @@ namespace AdvancedCalculator.Logic
                 return new List<Calculator>();
             }
         }
-        static List<int> SetRange()
+        List<double> SetRange()
         {
             string[] info = Text[0].Split(" ");
             int range = int.Parse(info[2]) - int.Parse(info[0]) + 1;
-            List<int> ar = new List<int>();
-            for (int i = 0; i < range; i++)
+            var ar = new List<double>();
+            for (double i = 0; i < range; i += Step)
             {
-                ar.Add(i + int.Parse(info[0]));
+                ar.Add(i + double.Parse(info[0]));
             }
             return ar;
         } 
-        public static void WriteOutput()
+        public void WriteOutput()
         {
             string path = Environment.CurrentDirectory + "\\Output.txt";
             if (Calculators.Count == 0) 
