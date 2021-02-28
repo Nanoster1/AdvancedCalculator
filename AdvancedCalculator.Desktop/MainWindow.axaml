@@ -1,0 +1,28 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        x:Class="AdvancedCalculator.Desktop.MainWindow"
+        Title="AdvancedCalculator.Desktop">
+  <Grid ColumnDefinitions="Auto,Auto,Auto,Auto" RowDefinitions="Auto,Auto,Auto,Auto">
+    <TextBlock Background="Black" Foreground="White">Вычисление функции:</TextBlock>
+    <DockPanel DockPanel.Dock="Left" 
+               Grid.Row="1"
+               Background="Black">
+      <Label Foreground="White" >y =</Label>
+      <TextBox Name="Expression"
+               Background="White" >sin(log2(-2+3))-(-x)</TextBox>
+    <Label Foreground="White">Диапазон x =</Label>
+    <TextBox Name="Range"
+             Background="White">20 - 25</TextBox>
+      <Label Foreground ="White">Шаг x =</Label>
+      <TextBox Name="Step"
+               Background="White">3</TextBox>
+    </DockPanel>
+    <Button Name="btnCalculate" Grid.Row="2" Click="btnCalculate_Click"  >Вычислить</Button>
+    <TextBlock Name="tbX" Grid.Row="3" Grid.Column="0" >X:</TextBlock>
+    <TextBlock Name="tbAnswer" Grid.Row="3" Grid.Column="1" >Answer:</TextBlock>
+    <TextBlock Name="tbRPN" Grid.Row="3" Grid.Column="2" >RPN:</TextBlock>
+  </Grid>
+</Window>
