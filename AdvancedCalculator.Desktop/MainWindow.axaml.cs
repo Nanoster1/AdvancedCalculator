@@ -12,8 +12,7 @@ namespace AdvancedCalculator.Desktop
         public MainWindow()
         {
             InitializeComponent();
-            this.AttachDevTools();
-            
+            this.AttachDevTools();   
         }
         private void btnCalculate_Click(object sender, RoutedEventArgs e)
         {
@@ -26,22 +25,29 @@ namespace AdvancedCalculator.Desktop
             string step = tbxStep.Text;
             string expression = tbxExpression.Text;
             string range = tbxRange.Text;
+            tbX.IsVisible = true;
+            tbAnswer.IsVisible = true;
+            tbRPN.IsVisible = true;
             tbX.Text = "X:";
             tbAnswer.Text = "Answer:";
             tbRPN.Text = "RPN: ";
             StringBuilder x = new StringBuilder(tbX.Text);
             StringBuilder answer = new StringBuilder(tbAnswer.Text);
             StringBuilder rpn = new StringBuilder(tbRPN.Text);
-            InfoWorker infoWorker = new InfoWorker(expression, range, step);
-            for (int i = 0; i < infoWorker.Calculators.Count; i++)
+            try
             {
-                x.Append($"\n{infoWorker.Calculators[i].X}");
-                answer.Append($"\n{infoWorker.Calculators[i].Answer}");
-                rpn.Append($"\n{infoWorker.Calculators[i].RPNStr}");
+                InfoWorker infoWorker = new InfoWorker(expression, range, step);
+                for (int i = 0; i < infoWorker.Calculators.Count; i++)
+                {
+                    x.Append($"\n{infoWorker.Calculators[i].X}");
+                    answer.Append($"\n{infoWorker.Calculators[i].Answer}");
+                    rpn.Append($"\n{infoWorker.Calculators[i].RPNStr}");
+                }
+                tbX.Text = x.ToString();
+                tbAnswer.Text = answer.ToString();
+                tbRPN.Text = rpn.ToString();
             }
-            tbX.Text = x.ToString();
-            tbAnswer.Text = answer.ToString();
-            tbRPN.Text = rpn.ToString();
+            catch { tbX.Text = "Некорректные данные"; }
         }
 
 
