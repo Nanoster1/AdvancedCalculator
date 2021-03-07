@@ -27,24 +27,16 @@ namespace AdvancedCalculator.Logic
         {
             string[] info = range.Split("--");
             double doubleRange = double.Parse(info[1]) - double.Parse(info[0]) + 1;
+            string s = step.ToString();
+            string[] s2 = s.Split(",");
+            int afterq = step.ToString().Split(",")[1].Length;
             var ar = new List<double>();
-            bool c = true;
             for (double i = 0; i < doubleRange; i += step)
             {
-                if (c && i > Math.Abs(double.Parse(info[0])) && CheckOnSwapSign(info[0], info[1]))
-                {
-                    i = Math.Abs(double.Parse(info[0]));
-                    c = false;
-                }
-                ar.Add(i + double.Parse(info[0]));
+                i = Math.Round(i, afterq);
+                ar.Add(Math.Round(i + double.Parse(info[0]), afterq));
             }
             return ar;
-        }
-        bool CheckOnSwapSign(string s1, string s2)
-        {
-            if (s1.Contains("-") && !s2.Contains("-"))
-                return true;
-            return false;
         }
     }
 }

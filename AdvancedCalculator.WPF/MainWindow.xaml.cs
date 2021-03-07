@@ -26,9 +26,11 @@ namespace AdvancedCalculator.WPF
             InitializeComponent();
             DrawOX();
             DrawOY();
-            DrawNums();
+            DrawNumsX();
+            DrawNumsY();
             DrawGrid();
-            DrawPoints();
+            DrawPointsX();
+            DrawPointsY();
         }
 
         private void Center_Click(object sender, RoutedEventArgs e)
@@ -105,19 +107,11 @@ namespace AdvancedCalculator.WPF
             polyline.Stroke = Brushes.Black;
             Field.Children.Add(polyline);
         }
-        private void DrawPoints()
+        private void DrawPointsY()
         {          
             for (int i = 0; i <= 250; i++)
             {
-                Ellipse ellipseY = new Ellipse();
-                Ellipse ellipseX = new Ellipse();
-                ellipseX.Width = 6;
-                ellipseX.Height = 6;
-                ellipseX.Stroke = Brushes.Black;
-                Canvas.SetLeft(ellipseX, i * 40 - 3);
-                Canvas.SetTop(ellipseX, Field.Height / 2 - 3);
-                ellipseX.Fill = Brushes.Black;
-                Field.Children.Add(ellipseX);
+                Ellipse ellipseY = new Ellipse();  
                 ellipseY.Width = 6;
                 ellipseY.Height = 6;
                 ellipseY.Stroke = Brushes.Black;
@@ -127,20 +121,40 @@ namespace AdvancedCalculator.WPF
                 Field.Children.Add(ellipseY);
             }
         }
-        private void DrawNums()
+        private void DrawPointsX()
+        {
+            for (int i = 0; i <= 250; i++)
+            {
+                Ellipse ellipseX = new Ellipse();
+                ellipseX.Width = 6;
+                ellipseX.Height = 6;
+                ellipseX.Stroke = Brushes.Black;
+                Canvas.SetLeft(ellipseX, i * 40 - 3);
+                Canvas.SetTop(ellipseX, Field.Height / 2 - 3);
+                ellipseX.Fill = Brushes.Black;
+                Field.Children.Add(ellipseX);
+            }
+        }
+        private void DrawNumsY()
         {
             for (int i = -125; i <= 125; i++) 
             { 
-                Label numX = new Label();
-                Label numY = new Label();
-                numX.Content = $"{i}";
-                Canvas.SetLeft(numX, (i + 125) * 40 - 8);
-                Canvas.SetTop(numX, Field.Height / 2 + 6);
-                Field.Children.Add(numX);
+                Label numY = new Label();               
                 numY.Content = $"{i}";
                 Canvas.SetLeft(numY, Field.Width / 2 + 6);
                 Canvas.SetTop(numY, (i + 125) * 40 - 15);
                 Field.Children.Add(numY);
+            }
+        }
+        private void DrawNumsX()
+        {
+            for (int i = -125; i <= 125; i++)
+            {
+                Label numX = new Label();
+                numX.Content = $"{i}";
+                Canvas.SetLeft(numX, (i + 125) * 40 - 8);
+                Canvas.SetTop(numX, Field.Height / 2 + 6);
+                Field.Children.Add(numX);
             }
         }
         private void DrawGrid()
