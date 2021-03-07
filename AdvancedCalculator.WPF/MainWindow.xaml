@@ -38,8 +38,7 @@
                 </StackPanel>
             </ScrollViewer>
             <ScrollViewer x:Name="svField" HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Hidden"  Grid.Row="3">
-            <Canvas x:Name="Field">
-            </Canvas>
+                <Canvas x:Name="Field"></Canvas>
             </ScrollViewer>
         </Grid>
     </Border>

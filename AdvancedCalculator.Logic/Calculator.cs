@@ -14,7 +14,7 @@ namespace AdvancedCalculator.Logic
         public Calculator(string expression, string x)
         {
             X = x;
-            RPNAr = GetRPN(expression.Replace("x", x));
+            RPNAr = GetRPN(expression.Replace("x", x).Replace("--", ""));
             RPNStr = GetRPNStr();
             Answer = GetAnswer();
         }
