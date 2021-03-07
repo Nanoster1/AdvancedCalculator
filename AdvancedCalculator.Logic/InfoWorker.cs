@@ -25,12 +25,16 @@ namespace AdvancedCalculator.Logic
         }
         List<double> SetRange(string range, double step)
         {
-            string[] info = range.Split("-");
+            string[] info = range.Split("--");
             double doubleRange = double.Parse(info[1]) - double.Parse(info[0]) + 1;
+            string s = step.ToString();
+            string[] s2 = s.Split(",");
+            int afterq = step.ToString().Split(",")[1].Length;
             var ar = new List<double>();
             for (double i = 0; i < doubleRange; i += step)
             {
-                ar.Add(i + double.Parse(info[0]));
+                i = Math.Round(i, afterq);
+                ar.Add(Math.Round(i + double.Parse(info[0]), afterq));
             }
             return ar;
         }
