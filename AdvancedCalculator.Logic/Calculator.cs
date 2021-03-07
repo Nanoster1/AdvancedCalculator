@@ -10,9 +10,11 @@ namespace AdvancedCalculator.Logic
         public object[] RPNAr { get; private set; }
         public string RPNStr { get; private set; }
         public double Answer { get; private set; }
-        public Calculator(string text)
+        public string X { get; private set; }
+        public Calculator(string expression, string x)
         {
-            RPNAr = GetRPN(text);
+            X = x;
+            RPNAr = GetRPN(expression.Replace("x", x));
             RPNStr = GetRPNStr();
             Answer = GetAnswer();
         }
