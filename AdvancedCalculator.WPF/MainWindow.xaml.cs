@@ -24,19 +24,12 @@ namespace AdvancedCalculator.WPF
         public MainWindow()
         {
             InitializeComponent();
-            DrawOX();
-            DrawOY();
-            DrawNumsX();
-            DrawNumsY();
-            DrawGrid();
-            DrawPointsX();
-            DrawPointsY();
         }
 
         private void Center_Click(object sender, RoutedEventArgs e)
         {
-            svField.ScrollToVerticalOffset(Field.Height/2 - Window.ActualHeight/2);
-            svField.ScrollToHorizontalOffset(Field.Width/2 - Window.ActualWidth / 2);
+            svField.ScrollToVerticalOffset(Field.Height / 2 - Window.ActualHeight / 2);
+            svField.ScrollToHorizontalOffset(Field.Width / 2 - Window.ActualWidth / 2);
         }
         private void Calculate_Click(object sender, RoutedEventArgs e)
         {
@@ -51,27 +44,36 @@ namespace AdvancedCalculator.WPF
                 InfoWorker infoWorker = new InfoWorker(tbxExpression.Text, tbxRange.Text, tbxStep.Text);
                 for (int i = 0; i < infoWorker.Calculators.Count; i++)
                 {
-                    x.Append($"\n{infoWorker.Calculators[i].X}");
-                    answer.Append($"\n{infoWorker.Calculators[i].Answer}");
-                    rpn.Append($"\n{infoWorker.Calculators[i].RPNStr}");
+                    x.Append($"\n{infoWorker.Calculators[i].X}   ");
+                    answer.Append($"\n{infoWorker.Calculators[i].Answer}   ");
+                    rpn.Append($"\n{infoWorker.Calculators[i].RPNStr}   ");
                 }
-                tbX.Text = x.Append("   ").ToString();
-                tbAnswer.Text = answer.Append("   ").ToString();
-                tbRPN.Text = rpn.Append("   ").ToString();
+                tbX.Text = x.ToString();
+                tbAnswer.Text = answer.ToString();
+                tbRPN.Text = rpn.ToString();
                 Draw(infoWorker);
                 btnCenter.Visibility = Visibility.Visible;
                 Center_Click(sender, e);
             }
-            catch 
+            catch
             {
                 tbAnswer.Text = "";
-                tbRPN.Text = ""; 
-                tbX.Text = "Некорректные данные"; 
+                tbRPN.Text = "";
+                tbX.Text = "Некорректные данные";
             }
         }
         private void Draw(InfoWorker infoWorker)
         {
-            Field.Children.Remove(Field.Children[^1]);           
+            Field.Children.Clear();
+            SetField(infoWorker);
+            DrawGridX();
+            DrawGridY();
+            DrawOX();
+            DrawOY();
+            DrawNumsX();
+            DrawNumsY();
+            DrawPointsX();
+            DrawPointsY();
             DrawFunction(infoWorker);
         }
         private void DrawOY()
@@ -86,8 +88,6 @@ namespace AdvancedCalculator.WPF
         }
         private void DrawOX()
         {
-            Field.Width = 10000;
-            Field.Height = 10000;
             Line oxLine = new Line();
             oxLine.X1 = 0;
             oxLine.Y1 = Field.Height / 2;
@@ -96,22 +96,38 @@ namespace AdvancedCalculator.WPF
             oxLine.Stroke = Brushes.Black;
             Field.Children.Add(oxLine);
         }
+        private void SetField(InfoWorker infoWorker)
+        {
+            if (Math.Abs(infoWorker.Range[0]) > Math.Abs(infoWorker.Range[^1]))
+                Field.Width = Math.Abs(Math.Round(infoWorker.Range[0])) * 80;
+            else
+                Field.Width = Math.Abs(Math.Round(infoWorker.Range[^1], 0)) * 80;
+            double maxY = 0;
+            for (int i = 0; i < infoWorker.Calculators.Count; i++)
+            {
+                if (Math.Abs(infoWorker.Calculators[i].Answer) > maxY)
+                    maxY = Math.Abs(infoWorker.Calculators[i].Answer);
+            }
+            Field.Height = Math.Round(maxY, 0) * 80;
+        }
         private void DrawFunction(InfoWorker infoWorker)
         {
             Polyline polyline = new Polyline();
             polyline.Points = new PointCollection();
             for (int i = 0; i < infoWorker.Calculators.Count; i++)
             {
-                polyline.Points.Add(new Point(5000 + 40 * double.Parse(infoWorker.Calculators[i].X), 5000 - 40 * infoWorker.Calculators[i].Answer));
+                if (double.IsNaN(infoWorker.Calculators[i].Answer))
+                    continue;
+                polyline.Points.Add(new Point(Field.Width / 2 + 40 * double.Parse(infoWorker.Calculators[i].X), Math.Round(Field.Height / 2 - 40 * infoWorker.Calculators[i].Answer, 12)));
             }
             polyline.Stroke = Brushes.Black;
             Field.Children.Add(polyline);
         }
         private void DrawPointsY()
-        {          
-            for (int i = 0; i <= 250; i++)
+        {
+            for (int i = 0; i <= Field.Height / 40; i++)
             {
-                Ellipse ellipseY = new Ellipse();  
+                Ellipse ellipseY = new Ellipse();
                 ellipseY.Width = 6;
                 ellipseY.Height = 6;
                 ellipseY.Stroke = Brushes.Black;
@@ -123,7 +139,7 @@ namespace AdvancedCalculator.WPF
         }
         private void DrawPointsX()
         {
-            for (int i = 0; i <= 250; i++)
+            for (int i = 0; i <= Field.Width / 40; i++)
             {
                 Ellipse ellipseX = new Ellipse();
                 ellipseX.Width = 6;
@@ -137,43 +153,49 @@ namespace AdvancedCalculator.WPF
         }
         private void DrawNumsY()
         {
-            for (int i = -125; i <= 125; i++) 
-            { 
-                Label numY = new Label();               
+            for (double i = Field.Height / 80; i >= Field.Height / -80; i--)
+            {
+                Label numY = new Label();
                 numY.Content = $"{i}";
                 Canvas.SetLeft(numY, Field.Width / 2 + 6);
-                Canvas.SetTop(numY, (i + 125) * 40 - 15);
+                Canvas.SetTop(numY, (Field.Height / 80 - i) * 40 - 15);
                 Field.Children.Add(numY);
             }
         }
         private void DrawNumsX()
         {
-            for (int i = -125; i <= 125; i++)
+            for (double i = Field.Width / -80; i <= Field.Width / 80; i++)
             {
                 Label numX = new Label();
                 numX.Content = $"{i}";
-                Canvas.SetLeft(numX, (i + 125) * 40 - 8);
+                Canvas.SetLeft(numX, (i + Field.Width / 80) * 40 - 8);
                 Canvas.SetTop(numX, Field.Height / 2 + 6);
                 Field.Children.Add(numX);
             }
         }
-        private void DrawGrid()
+        private void DrawGridX()
         {
-            for (int i = 0; i < 250; i++)
+            for (int i = 0; i <= Field.Height / 40; i++)
             {
                 Line lineX = new Line();
-                Line lineY = new Line();
                 lineX.X1 = 0;
                 lineX.Y1 = i * 40;
                 lineX.X2 = Field.Width;
                 lineX.Y2 = i * 40;
+                lineX.Stroke = Brushes.Gray;
+                Field.Children.Add(lineX);
+            }
+        }
+        private void DrawGridY()
+        {
+            for (int i = 0; i <= Field.Width / 40; i++)
+            {
+                Line lineY = new Line();
                 lineY.X1 = i * 40;
                 lineY.Y1 = 0;
                 lineY.X2 = i * 40;
                 lineY.Y2 = Field.Height;
-                lineX.Stroke = Brushes.Gray;
                 lineY.Stroke = Brushes.Gray;
-                Field.Children.Add(lineX);
                 Field.Children.Add(lineY);
             }
         }

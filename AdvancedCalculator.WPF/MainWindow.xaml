@@ -20,9 +20,9 @@
             </Grid.RowDefinitions>
             <StackPanel Orientation="Horizontal">
                 <Label>y =</Label>
-                <TextBox x:Name="tbxExpression" Width="Auto" MinWidth="112">sin(log2(-2+3))-(-x)</TextBox>
+                <TextBox x:Name="tbxExpression" Width="Auto" MinWidth="112">x^2</TextBox>
                 <Label>Диапазон x =</Label>
-                <TextBox x:Name="tbxRange" Width="Auto" MinWidth="50">-125 -- 125</TextBox>
+                <TextBox x:Name="tbxRange" Width="Auto" MinWidth="50">-100 -- 100</TextBox>
                 <Label>Шаг X =</Label>
                 <TextBox x:Name="tbxStep" Width="Auto" MinWidth="30">0,1</TextBox>
             </StackPanel>
