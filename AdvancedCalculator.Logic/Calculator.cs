@@ -7,14 +7,19 @@ namespace AdvancedCalculator.Logic
 {
     public class Calculator
     {
-        public object[] RPNAr { get; private set; }
-        public string RPNStr { get; private set; }
-        public double Answer { get; private set; }
         public string X { get; private set; }
+        public double Answer { get; private set; }
+        public string RPNStr { get; private set; }
+        public object[] RPNAr { get; private set; }
         public Calculator(string expression, string x)
         {
             X = x;
-            RPNAr = GetRPN(expression.Replace("x", x).Replace("--", ""));
+            if (x.Contains("-") && expression[expression.IndexOf("x") - 1] == '-')
+                RPNAr = GetRPN(expression.Replace("x",x).Replace("--", "+"));
+            else if (x.Contains("-"))
+                RPNAr = GetRPN(expression.Replace("x", "(" + x + ")"));
+            else
+                RPNAr = GetRPN(expression.Replace("x", x));
             RPNStr = GetRPNStr();
             Answer = GetAnswer();
         }
@@ -28,7 +33,7 @@ namespace AdvancedCalculator.Logic
             List<object> expression = new List<object>();
             for (int i = 0; i < text.Length; i++)                   
             {
-                if (CheckDigit(text[i]) || (text[i] == '-' && !CheckDigit(text[i - 1]) && text[i - 1] != ')'))                                                            //Если число
+                if (CheckDigit(text[i]) || ((text[i] == '-' || text[i] == '+') && !CheckDigit(text[i - 1]) && text[i - 1] != ')'))                                                            //Если число
                     expression.Add(ReadNumber(text, ref i));
                 else if (CheckLeftBracket(text[i]) || CheckRightBracket(text[i]) || CheckStartEnd(text[i]))
                     expression.Add(text[i].ToString());
@@ -200,14 +205,13 @@ namespace AdvancedCalculator.Logic
         string GetRPNStr()
         {
             StringBuilder @string = new StringBuilder();
-            for (int i = RPNAr.Length - 1; i > 0; i--)
+            for (int i = RPNAr.Length - 1; i >= 0; i--)
             {
                 if (RPNAr[i] is Operation)
                     @string.Append((RPNAr[i] as Operation).Name + " ");
                 else
                     @string.Append(RPNAr[i].ToString() + " ");
             }
-            @string.Append((RPNAr[0] as Operation).Name);
             return @string.ToString();
         }
         double GetAnswer()
