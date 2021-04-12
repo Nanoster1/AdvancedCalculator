@@ -20,19 +20,21 @@ namespace AdvancedCalculator.WPF
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class MainWindow : System.Windows.Window
     {
         public MainWindow()
         {
             InitializeComponent();
         }
-       InfoWorker InfoWorker { get; set; }
-        FunctionDrawer FunctionDrawer { get; set; }
+        InfoWorker InfoWorker { get; set; }
+        FunctionDrawer FunctionDrawer { get; set; } = default;
+        Point StartPoint { get; set; }
+        Thickness StartMargin { get; set; }
         private void Center_Click(object sender, RoutedEventArgs e)
         {
             Field.Margin = new Thickness(-(Field.Width / 2 - svField.ActualWidth / 2), -(Field.Height / 2 - svField.ActualHeight / 2), 0, 0);
-            FunctionDrawer.X = (Field.Width / 2 - svField.ActualWidth / 2);
-            FunctionDrawer.Y = Field.Height / 2 - svField.ActualHeight / 2;
+            FunctionDrawer.Window.X1 = (Field.Width / 2 - svField.ActualWidth / 2);
+            FunctionDrawer.Window.Y1 = Field.Height / 2 - svField.ActualHeight / 2;
             FunctionDrawer.Draw();
         }
         private void Calculate_Click(object sender, RoutedEventArgs e)
@@ -54,8 +56,6 @@ namespace AdvancedCalculator.WPF
                 MessageBox.Show("Неверное условие (Проверьте на наличие пробелов и скобочек)");
             }
         }
-        Point StartPoint { get; set; }
-        Thickness StartMargin { get; set; }
         private void Field_MouseDown(object sender, MouseButtonEventArgs e)
         {
             StartPoint = Mouse.GetPosition(this);
@@ -67,14 +67,14 @@ namespace AdvancedCalculator.WPF
             {
                 var MoveChange = Mouse.GetPosition(this) - StartPoint;
                 var endMargin = new Thickness(StartMargin.Left, StartMargin.Top, 0, 0);
-                if (FunctionDrawer.X - MoveChange.X > 0 && FunctionDrawer.X + svField.ActualWidth - MoveChange.X < Field.ActualWidth)
+                if (FunctionDrawer.Window.X1 - MoveChange.X > 0 && FunctionDrawer.Window.X1 + svField.ActualWidth - MoveChange.X < Field.ActualWidth)
                 {
-                    FunctionDrawer.X -= MoveChange.X;
+                    FunctionDrawer.Window.X1 -= MoveChange.X;
                     endMargin.Left += MoveChange.X;
                 }
-                if (FunctionDrawer.Y - MoveChange.Y > 0 && FunctionDrawer.Y + svField.ActualHeight - MoveChange.Y < Field.ActualHeight)
+                if (FunctionDrawer.Window.Y1 - MoveChange.Y > 0 && FunctionDrawer.Window.Y1 + svField.ActualHeight - MoveChange.Y < Field.ActualHeight)
                 {
-                    FunctionDrawer.Y -= MoveChange.Y;
+                    FunctionDrawer.Window.Y1 -= MoveChange.Y;
                     endMargin.Top += MoveChange.Y;
                 }
                 Field.Margin = endMargin;
@@ -86,7 +86,16 @@ namespace AdvancedCalculator.WPF
 
         private void Window_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            
-        }      
+            if (FunctionDrawer != null)
+                FunctionDrawer.Draw();
+        }
+
+        private void svField_MouseWheel(object sender, MouseWheelEventArgs e)
+        {
+            FunctionDrawer.Window.Scale++;
+            FunctionDrawer.SetField();
+            FunctionDrawer.SetElements();
+            FunctionDrawer.Draw();
+        }
     }
 }

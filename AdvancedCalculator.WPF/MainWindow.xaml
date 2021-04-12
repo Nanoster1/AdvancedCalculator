@@ -49,15 +49,16 @@
                 </DataGrid>
             </ScrollViewer>
             <ScrollViewer x:Name="svField" 
-                              Grid.Row="3"
-                              HorizontalScrollBarVisibility="Hidden" 
-                              VerticalScrollBarVisibility="Hidden">
+                          Grid.Row="3"
+                          HorizontalScrollBarVisibility="Hidden" 
+                          VerticalScrollBarVisibility="Hidden">
                     <Canvas x:Name="Field"
                             Background="White"
                             MouseDown="Field_MouseDown"
                             MouseMove="Field_MouseMove"
                             HorizontalAlignment="Left"
-                            VerticalAlignment="Top">
+                            VerticalAlignment="Top"
+                            MouseWheel="svField_MouseWheel">
                     </Canvas>
             </ScrollViewer>
         </Grid>

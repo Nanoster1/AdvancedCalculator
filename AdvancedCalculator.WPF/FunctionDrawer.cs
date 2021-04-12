@@ -11,34 +11,35 @@ namespace AdvancedCalculator.WPF
 {
     public class FunctionDrawer
     {
-        Canvas Field { get; set; } = new Canvas();
-        public double X { get; set; }
-        public double Y { get; set; }
+        Canvas Field { get; set; }
+        public Window Window { get; private set; }
         List<object> Elements { get; set; } = new List<object>();
         InfoWorker InfoWorker { get; set; }
-        ScrollViewer SVField { get; set; }
-        public FunctionDrawer(Canvas field, InfoWorker infoWorker, ScrollViewer svField)
+        Polyline Function { get; set; } = new Polyline() { Stroke = Brushes.Black};
+        public FunctionDrawer(Canvas field, InfoWorker infoWorker, Control svField)
         {
             Field = field;
+            Window = new Window(svField);
             InfoWorker = infoWorker;
             SetField();
             SetElements();
-            SVField = svField;
         }
         public void SetElements()
         {
-            AddPointsX();
-            AddNumsX();
-            AddPointsY();
-            AddNumsY();
+            Elements.Clear();
             AddGridX();
             AddGridY();
             AddOX();
             AddOY();
+            AddPointsX();
+            AddNumsX();
+            AddPointsY();
+            AddNumsY();
             AddFunction();
         }
         public void Draw()
         {
+            Function.Points.Clear();
             Field.Children.Clear();
             for (int i = 0; i < Elements.Count; i++)
             {
@@ -46,47 +47,44 @@ namespace AdvancedCalculator.WPF
                 {
                     if (line.Y1 == line.Y2)
                     {
-                        if (line.Y1 <= Y + SVField.ActualHeight && line.Y2 >= Y)
+                        if (line.Y1 <= Window.Y2 && line.Y2 >= Window.Y1)
                             Field.Children.Add(line);
                     }
                     else
                     {
-                        if (line.X1 <= X + SVField.ActualWidth && line.X2 >= X)
+                        if (line.X1 <= Window.X2 && line.X2 >= Window.X1)
                             Field.Children.Add(line);
                     }
                 }
                 else if (Elements[i] is VisualPoint point)
                 {
-                    if (point.Point.X >= X && point.Point.X <= X + SVField.ActualWidth && point.Point.Y >= Y && point.Point.Y <= Y + SVField.ActualHeight)
+                    if (point.Type == Type.Axis)
                     {
-                        Ellipse ellipse = new Ellipse();
-                        ellipse.Width = 6;
-                        ellipse.Height = 6;
-                        ellipse.Stroke = Brushes.Black;
-                        Canvas.SetLeft(ellipse, point.Point.X - 3);
-                        Canvas.SetTop(ellipse, point.Point.Y - 3);
-                        Field.Children.Add(ellipse);
-                        Label num = new Label();
-                        if (point.Axis == true)
+                        if (point.Point.X >= Window.X1 && point.Point.X <= Window.X2 && 
+                            point.Point.Y >= Window.Y1 && point.Point.Y <= Window.Y2)
                         {
-                            num.Content = $"{point.Number}";
-                            Canvas.SetLeft(num, (point.Number + Field.Width / 80) * 40 - 8);
-                            Canvas.SetTop(num, Field.Height / 2 + 6);
+                            Field.Children.Add(point.GetEllipse());
+                            Field.Children.Add(point.GetVisualNumber(Field));
                         }
-                        else
-                        {
-                            num.Content = $"{point.Number}";
-                            Canvas.SetLeft(num, Field.Width / 2 + 6);
-                            Canvas.SetTop(num, (Field.Height / 80 - point.Number) * 40 - 15);
-                        }
-                        Field.Children.Add(num);
                     }
-                }
-                else
-                    Field.Children.Add(Elements[i] as UIElement);
+                    else
+                    {
+                        if (point.Point.X >= Window.X1 - Window.Scale && point.Point.X <= Window.X2 + Window.Scale &&
+                            point.Point.Y >= Window.Y1 - Window.Scale && point.Point.Y <= Window.Y2 + Window.Scale)
+                        {
+                            Function.Points.Add(point.Point);
+                            var Ellipse = point.GetEllipse();
+                            Ellipse.Fill = Brushes.Red;
+                            Ellipse.ToolTip = $"X: {(point.Point.X - Field.Width / 2) / Window.Scale} Y: {-(point.Point.Y - Field.Height / 2) / Window.Scale}";
+                            Field.Children.Add(Ellipse);
+                        }
+                    }
+                } 
             }
+            Field.Children.Add(Function);
         }
-        private void AddOY()
+
+        void AddOY()
         {
             Line oyLine = new Line();
             oyLine.X1 = Field.Width / 2;
@@ -96,7 +94,7 @@ namespace AdvancedCalculator.WPF
             oyLine.Stroke = Brushes.Black;
             Elements.Add(oyLine);
         }
-        private void AddOX()
+        void AddOX()
         {
             Line oxLine = new Line();
             oxLine.X1 = 0;
@@ -106,12 +104,12 @@ namespace AdvancedCalculator.WPF
             oxLine.Stroke = Brushes.Black;
             Elements.Add(oxLine);
         }
-        private void SetField()
+        public void SetField()
         {
             if (Math.Abs(InfoWorker.Range[0]) > Math.Abs(InfoWorker.Range[^1]))
-                Field.Width = Math.Abs(Math.Round(InfoWorker.Range[0])) * 80;
+                Field.Width = Math.Abs(Math.Round(InfoWorker.Range[0])) * Window.Scale * 2; //На 2 умножаем, т.к. у нас 2 стороны (Слева и справа)
             else
-                Field.Width = Math.Abs(Math.Round(InfoWorker.Range[^1], 0)) * 80;
+                Field.Width = Math.Abs(Math.Round(InfoWorker.Range[^1], 0)) * Window.Scale * 2;
             double maxY = 0;
             for (int i = 0; i < InfoWorker.Calculators.Count; i++)
             {
@@ -120,82 +118,78 @@ namespace AdvancedCalculator.WPF
                 else if (Math.Abs(InfoWorker.Calculators[i].Answer) > maxY)
                     maxY = Math.Abs(InfoWorker.Calculators[i].Answer);
             }
-            Field.Height = Math.Round(maxY, 0) * 80;
+            Field.Height = Math.Round(maxY, 0) * Window.Scale * 2;
         }
-        private void AddFunction()
+        void AddFunction()
         {
-            Polyline polyline = new Polyline();
-            polyline.Points = new PointCollection();
             for (int i = 0; i < InfoWorker.Calculators.Count; i++)
             {
                 if (double.IsNaN(InfoWorker.Calculators[i].Answer) || double.IsInfinity(InfoWorker.Calculators[i].Answer))
                     continue;
-                polyline.Points.Add(new Point((Field.Width / 2 + 40 * double.Parse(InfoWorker.Calculators[i].X)), Math.Round(Field.Height / 2 - 40 * InfoWorker.Calculators[i].Answer, 12)));
+                Elements.Add(new VisualPoint((Field.Width / 2 + Window.Scale * double.Parse(InfoWorker.Calculators[i].X)), Math.Round(Field.Height / 2 - Window.Scale * InfoWorker.Calculators[i].Answer, 12), Window));
             }
-            polyline.Stroke = Brushes.Black;
-            Elements.Add(polyline);
         }
-        private void AddPointsY()
+        void AddPointsY()
         {
-            for (int i = 0; i <= Field.Height / 40; i++)
+            for (int i = 0; i <= Field.Height / Window.Scale; i++)
             {
-                VisualPoint visualPoint = new VisualPoint(Field.Width / 2, i * 40, false);
+                VisualPoint visualPoint = new VisualPoint(Field.Width / 2, i * Window.Scale, Window, Axis.AY);
                 Elements.Add(visualPoint);
             }
         }
-        private void AddPointsX()
+        void AddPointsX()
         {
-            for (int i = 0; i <= Field.Width / 40; i++)
+            for (int i = 0; i <= Field.Width / Window.Scale; i++)
             {
-                VisualPoint visualPoint = new VisualPoint(i * 40, Field.Height / 2, true);
+                VisualPoint visualPoint = new VisualPoint(i * Window.Scale, Field.Height / 2, Window, Axis.AX);
                 Elements.Add(visualPoint);
             }
         }
-        private void AddNumsY()
+        void AddNumsY()
         {
             int k = 0;
-            for (double i = Field.Height / 80; i >= Field.Height / -80; i--)
+            for (double i = Field.Height / (Window.Scale * 2); i >= Field.Height / -(Window.Scale * 2); i--)
             {
-                if (Elements[k] is VisualPoint visualPoint && visualPoint.Axis == false)
+                if (Elements[k] is VisualPoint visualPoint && visualPoint.Axis == Axis.AY)
                     visualPoint.Number = i;
                 else 
                     i++;
                 k++;
             }
         }
-        private void AddNumsX()
+        void AddNumsX()
         {
             int k = 0;
-            for (double i = Field.Width / -80; i <= Field.Width / 80; i++)
+            for (double i = Field.Width / (-Window.Scale * 2); i <= Field.Width / (Window.Scale * 2); i++)
             {
-                if (Elements[k] is VisualPoint visualPoint && visualPoint.Axis == true)
+                if (Elements[k] is VisualPoint visualPoint && visualPoint.Axis == Axis.AX)
                     visualPoint.Number = i;
                 else
                     i--;
                 k++;
             }
         }
-        private void AddGridX()
+        void AddGridX()
         {
-            for (int i = 0; i <= Field.Height / 40; i++)
+            for (int i = 0; i <= Field.Height / Window.Scale; i++)
             {
                 Line lineX = new Line();
                 lineX.X1 = 0;
-                lineX.Y1 = i * 40;
+                lineX.Y1 = i * Window.Scale;
                 lineX.X2 = Field.Width;
-                lineX.Y2 = i * 40;
+                lineX.Y2 = lineX.Y1;
                 lineX.Stroke = Brushes.Gray;
                 Elements.Add(lineX);
             }
         }
-        private void AddGridY()
+        void AddGridY()
         {
-            for (int i = 0; i <= Field.Width / 40; i++)
+            for (int i = 0; i <= Field.Width / Window.Scale; i++)
             {
                 Line lineY = new Line();
-                lineY.X1 = i * 40;
+                lineY.X1 = i * Window.Scale;
                 lineY.Y1 = 0;
-                lineY.X2 = i * 40;
+                lineY.X2 = lineY.X1;
                 lineY.Y2 = Field.Height;
                 lineY.Stroke = Brushes.Gray;
                 Elements.Add(lineY);
