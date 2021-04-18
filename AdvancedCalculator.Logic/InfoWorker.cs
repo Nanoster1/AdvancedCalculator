@@ -28,9 +28,9 @@ namespace AdvancedCalculator.Logic
         {
             string[] info = range.Split("--");
             double doubleRange = double.Parse(info[1]) - double.Parse(info[0]);
-            string s = step.ToString();
-            string[] s2 = s.Split(",");
-            int afterq = step.ToString().Split(",")[1].Length;
+            int afterq = 0;
+            if (step.ToString().Contains(','))
+                afterq = step.ToString().Split(",")[1].Length;
             var ar = new List<double>();
             for (double i = 0; i <= doubleRange; i += step)
             {

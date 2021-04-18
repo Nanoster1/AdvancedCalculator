@@ -5,19 +5,20 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:AdvancedCalculator.WPF"
         mc:Ignorable="d"
-        Title="MainWindow" Height="600" Width="500" Name="Window">
+        Title="MainWindow" Height="600" Width="500" Name="Window" SizeChanged="Window_SizeChanged">
     <Border Background="White"
         BorderBrush="Blue"
         BorderThickness="2"
         CornerRadius="5"
         Padding="1">
-        <Grid ShowGridLines="True">
+        <Grid ShowGridLines="False">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"></RowDefinition>
                 <RowDefinition Height="Auto"></RowDefinition>
                 <RowDefinition Height="Auto"></RowDefinition>
                 <RowDefinition x:Name="Grid3" Height="*"></RowDefinition>
             </Grid.RowDefinitions>
+            <Viewbox MaxHeight="200" MaxWidth="500">
             <StackPanel Orientation="Horizontal">
                 <Label>y =</Label>
                 <TextBox x:Name="tbxExpression" Width="Auto" MinWidth="112">x^2</TextBox>
@@ -26,19 +27,39 @@
                 <Label>Шаг X =</Label>
                 <TextBox x:Name="tbxStep" Width="Auto" MinWidth="30">0,1</TextBox>
             </StackPanel>
-            <StackPanel Orientation="Horizontal"  Grid.Row="1">
-                <Button Click="Calculate_Click">Вычислить</Button>
-                <Button Visibility="Hidden" x:Name="btnCenter" Click="Center_Click">В центр</Button>
-            </StackPanel>
-            <ScrollViewer  Grid.Row="2" VerticalScrollBarVisibility="Auto" Height="100" >
-                <StackPanel Orientation="Horizontal" >
-                    <TextBlock x:Name="tbX" MinWidth="30">X:</TextBlock>
-                    <TextBlock x:Name="tbAnswer" MinWidth="60">Ответ:</TextBlock>
-                    <TextBlock x:Name="tbRPN">Обратная польская запись:</TextBlock>
+            </Viewbox>
+            <Viewbox Grid.Row="1" MaxHeight="25" MaxWidth="150">
+                <StackPanel Orientation="Horizontal"  >
+                    <Button Click="Calculate_Click">Вычислить</Button>
+                    <Button x:Name="btnCenter" 
+                            Visibility="Collapsed"
+                            Click="Center_Click"
+                            >В центр
+                    </Button>
                 </StackPanel>
+            </Viewbox>
+            <ScrollViewer MaxHeight="100" Grid.Row="2" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
+                <DataGrid x:Name="Table" 
+                          CanUserResizeColumns="False" 
+                          AutoGenerateColumns="True" 
+                          BorderBrush="Black"   
+                          VerticalScrollBarVisibility="Auto" 
+                          HorizontalScrollBarVisibility="Auto"
+                          CanUserSortColumns="False">
+                </DataGrid>
             </ScrollViewer>
-            <ScrollViewer x:Name="svField" HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Hidden"  Grid.Row="3">
-                <Canvas x:Name="Field"></Canvas>
+            <ScrollViewer x:Name="svField" 
+                          Grid.Row="3"
+                          HorizontalScrollBarVisibility="Hidden" 
+                          VerticalScrollBarVisibility="Hidden">
+                    <Canvas x:Name="Field"
+                            Background="White"
+                            MouseDown="Field_MouseDown"
+                            MouseMove="Field_MouseMove"
+                            HorizontalAlignment="Left"
+                            VerticalAlignment="Top"
+                            MouseWheel="svField_MouseWheel">
+                    </Canvas>
             </ScrollViewer>
         </Grid>
     </Border>
