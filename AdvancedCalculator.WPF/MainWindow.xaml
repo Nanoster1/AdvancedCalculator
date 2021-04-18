@@ -13,9 +13,9 @@
         Padding="1">
         <Grid ShowGridLines="False">
             <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"></RowDefinition>
-                <RowDefinition Height="Auto"></RowDefinition>
-                <RowDefinition Height="Auto"></RowDefinition>
+                <RowDefinition x:Name="Row1" Height="Auto"></RowDefinition>
+                <RowDefinition x:Name="Row2" Height="Auto"></RowDefinition>
+                <RowDefinition x:Name="Row3" Height="Auto"></RowDefinition>
                 <RowDefinition x:Name="Grid3" Height="*"></RowDefinition>
             </Grid.RowDefinitions>
             <Viewbox MaxHeight="200" MaxWidth="500">
@@ -28,39 +28,50 @@
                 <TextBox x:Name="tbxStep" Width="Auto" MinWidth="30">0,1</TextBox>
             </StackPanel>
             </Viewbox>
-            <Viewbox Grid.Row="1" MaxHeight="25" MaxWidth="150">
+            <Viewbox Grid.Row="1" MaxHeight="25" MaxWidth="500" MinWidth="300">
                 <StackPanel Orientation="Horizontal"  >
                     <Button Click="Calculate_Click">Вычислить</Button>
+                    <TextBox x:Name="tbScale" 
+                             ToolTip="Масштаб"
+                             Text="       ">
+                    </TextBox>
+                    <Button ToolTip="Установить заданный масштаб"
+                            Click="SetScale_Click">Установить</Button>
                     <Button x:Name="btnCenter" 
                             Visibility="Collapsed"
                             Click="Center_Click"
                             >В центр
                     </Button>
+                    <CheckBox x:Name="FunctionPointVisible" 
+                              Click="FunctionPointVisible_Click" 
+                              ToolTip="Отображать точки функции">
+                    </CheckBox>
+                    <CheckBox x:Name="PointVisible" 
+                              Click="PointVisible_Click" 
+                              ToolTip="Отображать точки на осях">
+                    </CheckBox>
                 </StackPanel>
             </Viewbox>
             <ScrollViewer MaxHeight="100" Grid.Row="2" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
+                <Viewbox>
                 <DataGrid x:Name="Table" 
                           CanUserResizeColumns="False" 
-                          AutoGenerateColumns="True" 
-                          BorderBrush="Black"   
+                          AutoGenerateColumns="True"    
                           VerticalScrollBarVisibility="Auto" 
                           HorizontalScrollBarVisibility="Auto"
                           CanUserSortColumns="False">
                 </DataGrid>
+                </Viewbox>
             </ScrollViewer>
-            <ScrollViewer x:Name="svField" 
-                          Grid.Row="3"
-                          HorizontalScrollBarVisibility="Hidden" 
-                          VerticalScrollBarVisibility="Hidden">
-                    <Canvas x:Name="Field"
-                            Background="White"
-                            MouseDown="Field_MouseDown"
-                            MouseMove="Field_MouseMove"
-                            HorizontalAlignment="Left"
-                            VerticalAlignment="Top"
-                            MouseWheel="svField_MouseWheel">
-                    </Canvas>
-            </ScrollViewer>
+            <Canvas x:Name="Canvas"
+                    Grid.Row="3"
+                    Background="White"
+                    Width="400"
+                    Height="400"
+                    MouseDown="Field_MouseDown"
+                    MouseMove="Field_MouseMove"
+                    MouseWheel="Canvas_MouseWheel">
+            </Canvas>
         </Grid>
     </Border>
 </Window>

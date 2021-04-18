@@ -25,30 +25,27 @@ namespace AdvancedCalculator.WPF
         public MainWindow()
         {
             InitializeComponent();
+            Field.SetCanvas(Canvas);
         }
         InfoWorker InfoWorker { get; set; }
         FunctionDrawer FunctionDrawer { get; set; } = default;
         Point StartPoint { get; set; }
-        Thickness StartMargin { get; set; }
         private void Center_Click(object sender, RoutedEventArgs e)
         {
-            Field.Margin = new Thickness(-(Field.Width / 2 - svField.ActualWidth / 2), -(Field.Height / 2 - svField.ActualHeight / 2), 0, 0);
-            FunctionDrawer.Window.X1 = (Field.Width / 2 - svField.ActualWidth / 2);
-            FunctionDrawer.Window.Y1 = Field.Height / 2 - svField.ActualHeight / 2;
+            Field.X1 = -Canvas.Width / 2;
+            Field.Y1 = -Canvas.Height / 2;
             FunctionDrawer.Draw();
         }
         private void Calculate_Click(object sender, RoutedEventArgs e)
         {
             try 
-            { 
+            {
                 InfoWorker = new InfoWorker(tbxExpression.Text, tbxRange.Text, tbxStep.Text);
                 Table.ItemsSource = InfoWorker.Calculators;
-                Table.Columns.Remove(Table.Columns[^1]);
-                Table.Columns[1].Header = "RPN";
-                FunctionDrawer = new FunctionDrawer(Field, InfoWorker, svField);
+                Table.Columns[2].Header = "RPN";
+                FunctionDrawer = new FunctionDrawer(InfoWorker);
                 FunctionDrawer.Draw();
                 btnCenter.Visibility = Visibility.Visible;
-                Field.Margin = new Thickness(0, 0, 0, 0); ;
                 Center_Click(sender, e);
             }
             catch
@@ -59,43 +56,62 @@ namespace AdvancedCalculator.WPF
         private void Field_MouseDown(object sender, MouseButtonEventArgs e)
         {
             StartPoint = Mouse.GetPosition(this);
-            StartMargin = Field.Margin;
         }
         private void Field_MouseMove(object sender, MouseEventArgs e)
         {
             if (e.LeftButton == MouseButtonState.Pressed)
             {
-                var MoveChange = Mouse.GetPosition(this) - StartPoint;
-                var endMargin = new Thickness(StartMargin.Left, StartMargin.Top, 0, 0);
-                if (FunctionDrawer.Window.X1 - MoveChange.X > 0 && FunctionDrawer.Window.X1 + svField.ActualWidth - MoveChange.X < Field.ActualWidth)
-                {
-                    FunctionDrawer.Window.X1 -= MoveChange.X;
-                    endMargin.Left += MoveChange.X;
-                }
-                if (FunctionDrawer.Window.Y1 - MoveChange.Y > 0 && FunctionDrawer.Window.Y1 + svField.ActualHeight - MoveChange.Y < Field.ActualHeight)
-                {
-                    FunctionDrawer.Window.Y1 -= MoveChange.Y;
-                    endMargin.Top += MoveChange.Y;
-                }
-                Field.Margin = endMargin;
+                var moveChange = Mouse.GetPosition(this) - StartPoint;
+                Field.X1 -= moveChange.X;
+                Field.Y1 -= moveChange.Y;
                 FunctionDrawer.Draw();
                 StartPoint = Mouse.GetPosition(this);
-                StartMargin = Field.Margin;
             }
         }
-
         private void Window_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            if (FunctionDrawer != null)
-                FunctionDrawer.Draw();
+            Canvas.Width = this.ActualWidth;
+            Canvas.Height = this.ActualHeight - (Row1.ActualHeight + Row2.ActualHeight + Row3.ActualHeight);
+            if (InfoWorker != null) { FunctionDrawer.Draw(); }
         }
 
-        private void svField_MouseWheel(object sender, MouseWheelEventArgs e)
+        private void Canvas_MouseWheel(object sender, MouseWheelEventArgs e)
         {
-            FunctionDrawer.Window.Scale++;
-            FunctionDrawer.SetField();
-            FunctionDrawer.SetElements();
-            FunctionDrawer.Draw();
+            if (e.Delta > 0)
+                Field.Scale += 5;
+            else if (Field.Scale > 40)
+                Field.Scale -= 5;
+            if (InfoWorker != null) { FunctionDrawer.Draw(); }
+        }
+
+        private void FunctionPointVisible_Click(object sender, RoutedEventArgs e)
+        {
+            Field.FunctionPointVisible = (bool)FunctionPointVisible.IsChecked;
+            if (InfoWorker != null) { FunctionDrawer.Draw(); }
+        }
+        private void PointVisible_Click(object sender, RoutedEventArgs e)
+        {
+            Field.PointVisible = (bool)PointVisible.IsChecked;
+            if (InfoWorker != null) { FunctionDrawer.Draw(); }
+        }
+
+        private void SetScale_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                double scale = double.Parse(tbScale.Text);
+                if (scale <= 400 && scale >= 40)
+                {
+                    Field.Scale = double.Parse(tbScale.Text);
+                    if (InfoWorker != null) { FunctionDrawer.Draw(); }
+                }
+                else
+                    MessageBox.Show("Максимальный масштаб - 400%, минимальный - 40%");
+            }
+            catch
+            {
+                MessageBox.Show("Ошибка при выставлении масштаба");
+            }
         }
     }
 }
