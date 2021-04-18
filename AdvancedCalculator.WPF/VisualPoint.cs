@@ -8,54 +8,52 @@ using System.Windows.Shapes;
 
 namespace AdvancedCalculator.WPF
 {
-    public enum Type { Function, Axis}
     public enum Axis { AX, AY}
     public class VisualPoint
     {
-        public Point Point { get; private set; }
+        public Point Point { get; private set; } //В пикселях
         public Axis Axis { get; private set; }
-        public double Number { get; set; }
-        public Type Type { get; private set; }
-        private Window Control { get; set; }
-        public VisualPoint(double x, double y, Window control)
+        public VisualPoint(double x, double y)
         {
             Point = new Point(x, y);
-            Type = Type.Function;
-            Control = control;
         }
-        public VisualPoint(double x, double y, Window control ,Axis axis)
+        public VisualPoint(double x, double y, Axis axis)
         {
             Point = new Point(x, y);
-            Type = Type.Axis;
             Axis = axis;
-            Control = control;
         }
-        public Ellipse GetEllipse()
+        public Ellipse GetEllipse(SolidColorBrush brush)
         {
-            Ellipse ellipse = new Ellipse();
-            ellipse.Width = 8;
-            ellipse.Height = 8;
-            ellipse.Stroke = Brushes.Black;
-            Canvas.SetLeft(ellipse, Point.X - 4);
-            Canvas.SetTop(ellipse, Point.Y - 4);
+            double x = Point.X / Field.OneCmScale;
+            double y = -Point.Y / Field.OneCmScale;
+            if (y == -0) { y = 0; }
+            Ellipse ellipse = new Ellipse
+            {
+                Width = 0.08 * Field.Scale,
+                Height = 0.08 * Field.Scale,
+                Stroke = Brushes.Black,
+                Fill = brush,
+                ToolTip = $"X:{x} Y:{y}"
+            };
+            Canvas.SetLeft(ellipse, Point.X - Field.X1 - Field.EllipseScale / 2);
+            Canvas.SetTop(ellipse, Point.Y - Field.Y1 - Field.EllipseScale / 2);
             return ellipse;
-        }  
-        public Label GetVisualNumber(Canvas Field)
-        {
-            Label num = new Label();
-            if (Axis == Axis.AX)
-            {
-                num.Content = $"{Number}";
-                Canvas.SetLeft(num, (Number + Field.Width / (Control.Scale * 2)) * Control.Scale - 8);
-                Canvas.SetTop(num, Field.Height / 2 + 6);
-            }
-            else
-            {
-                num.Content = $"{Number}";
-                Canvas.SetLeft(num, Field.Width / 2 + 6);
-                Canvas.SetTop(num, (Field.Height / (Control.Scale * 2) - Number) * Control.Scale - 15);
-            }
-            return num;
         }
+        public Point GetPointForFunction()
+        {
+            return new Point()
+            {
+                X = Point.X - Field.X1,
+                Y = Point.Y - Field.Y1
+            };
+        }
+       public Label GetVisualNumber(double number)
+       {
+            Label num = new Label { FontSize = Field.FontScale };
+            num.Content = Convert.ToInt32(number);
+            Canvas.SetLeft(num, Point.X - Field.X1 - num.ActualWidth + 4 / 2);
+            Canvas.SetTop(num, Point.Y - Field.Y1 - 2);
+            return num;
+       }
     }
 }

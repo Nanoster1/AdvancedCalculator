@@ -17,9 +17,10 @@ namespace AdvancedCalculator.Logic
         List<Calculator> SetCalcs(string expression)
         {
                 List<Calculator> calculators = new List<Calculator>();
+                RPN.GetRPN($"⊥{expression}⊥");
                 for (int i = 0; i < Range.Count; i++)
                 {
-                    Calculator calculator = new Calculator("⊥" + expression + "⊥", Range[i].ToString());
+                    Calculator calculator = new Calculator(Range[i].ToString());
                     calculators.Add(calculator);
                 }
                 return calculators;
