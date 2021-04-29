@@ -1,18 +1,28 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace AdvancedCalculator.Logic
 {
     public static class RPN
     {
-        public static object[] RPNAr { get; private set; }
-        public static int Index { get; private set; }
+        public static List<object> RPNAr { get; private set; }
+        public static List<int> Indexes { get; private set; } = new List<int>();
         public static void GetRPN(string text)
         {
             List<object> expression = ParseExpression(text);
-            RPNAr = ParseInRPN(expression);
-            Index = Array.IndexOf(RPN.RPNAr, "x");
+            RPNAr = ParseInRPN(expression).ToList();
+            GetIndexes();
+        }
+        static void GetIndexes()
+        {
+            while (RPNAr.Contains("x"))
+            {
+                int i = RPNAr.IndexOf("x");
+                Indexes.Add(i);
+                RPNAr[i] = null;
+            }
         }
         static List<object> ParseExpression(string text)                                                              //Парсим выражение в лист объектов
         {
@@ -52,6 +62,8 @@ namespace AdvancedCalculator.Logic
             StringBuilder @string = new StringBuilder().Append(text[i]);
             while (!CheckDigit(text[i + 1].ToString()) && text[i + 1] != '(' && text[i + 1] != ')')
             {
+                if ("+-*/".Contains(text[i]))
+                    break;
                 i++;
                 @string.Append(text[i]);
             }

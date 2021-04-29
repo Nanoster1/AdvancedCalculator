@@ -27,7 +27,7 @@ namespace AdvancedCalculator.WPF
             InitializeComponent();
             Field.SetCanvas(Canvas);
         }
-        InfoWorker InfoWorker { get; set; }
+        public InfoWorker InfoWorker { get; set; }
         FunctionDrawer FunctionDrawer { get; set; } = default;
         Point StartPoint { get; set; }
         private void Center_Click(object sender, RoutedEventArgs e)
@@ -41,8 +41,7 @@ namespace AdvancedCalculator.WPF
             try 
             {
                 InfoWorker = new InfoWorker(tbxExpression.Text, tbxRange.Text, tbxStep.Text);
-                Table.ItemsSource = InfoWorker.Calculators;
-                Table.Columns[2].Header = "RPN";
+           
                 FunctionDrawer = new FunctionDrawer(InfoWorker);
                 FunctionDrawer.Draw();
                 btnCenter.Visibility = Visibility.Visible;
@@ -64,9 +63,16 @@ namespace AdvancedCalculator.WPF
                 var moveChange = Mouse.GetPosition(this) - StartPoint;
                 Field.X1 -= moveChange.X;
                 Field.Y1 -= moveChange.Y;
-                FunctionDrawer.Draw();
+                if (InfoWorker != null) { FunctionDrawer.Draw(); }
                 StartPoint = Mouse.GetPosition(this);
             }
+            SetLblCoords();
+        }
+        private void SetLblCoords()
+        {
+            lblCoords.Content =
+                $"X: {Math.Round((Field.X1 + Mouse.GetPosition(Canvas).X) / Field.OneCmScale, 2)} " +
+                $"Y: {Math.Round(-(Field.Y1 + Mouse.GetPosition(Canvas).Y) / Field.OneCmScale, 2)}";
         }
         private void Window_SizeChanged(object sender, SizeChangedEventArgs e)
         {
@@ -77,24 +83,28 @@ namespace AdvancedCalculator.WPF
 
         private void Canvas_MouseWheel(object sender, MouseWheelEventArgs e)
         {
-            if (e.Delta > 0)
-                Field.Scale += 5;
-            else if (Field.Scale > 40)
-                Field.Scale -= 5;
-            if (InfoWorker != null) { FunctionDrawer.Draw(); }
+            if (InfoWorker != null)
+            {
+                double startX = (Field.X1 + Canvas.Width / 2) / Field.Scale;
+                double startY = (Field.Y1 + Canvas.Height / 2) / Field.Scale;
+                if (e.Delta > 0)
+                    Field.Scale += 5;
+                else if (Field.Scale > 40)
+                    Field.Scale -= 5;
+                Field.X1 = startX * Field.Scale - Canvas.Width / 2;
+                Field.Y1 = startY * Field.Scale - Canvas.Height / 2;
+                FunctionDrawer.Draw();
+            }
         }
 
-        private void FunctionPointVisible_Click(object sender, RoutedEventArgs e)
+        private void Settings_Click(object sender, RoutedEventArgs e)
         {
-            Field.FunctionPointVisible = (bool)FunctionPointVisible.IsChecked;
+            Field.FunctionPointsVisible = (bool)FunctionPointsVisible.IsChecked;
+            Field.AxisPointsVisible = (bool)AxisPointsVisible.IsChecked;
+            Field.GridVisible = (bool)GridVisible.IsChecked;
+            Field.AxisEllipsesVisible = (bool)AxisEllipsesVisible.IsChecked;
             if (InfoWorker != null) { FunctionDrawer.Draw(); }
-        }
-        private void PointVisible_Click(object sender, RoutedEventArgs e)
-        {
-            Field.PointVisible = (bool)PointVisible.IsChecked;
-            if (InfoWorker != null) { FunctionDrawer.Draw(); }
-        }
-
+        } 
         private void SetScale_Click(object sender, RoutedEventArgs e)
         {
             try

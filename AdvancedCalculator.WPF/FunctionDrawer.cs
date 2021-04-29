@@ -22,7 +22,7 @@ namespace AdvancedCalculator.WPF
             DrawGrid();
             DrawFunction();
         }
-        void DrawGrid()
+        public void DrawGrid()
         {
             Field.Canvas.Children.Clear();
             DrawRightY();
@@ -35,16 +35,7 @@ namespace AdvancedCalculator.WPF
             for (double i = 0; i < Field.X2; i += Field.OneCmScale) //для правых y
             {
                 if (i > Field.X1)
-                {
-                    Field.Canvas.Children.Add(GetLine(i, Axis.AY));
-                    var vpoint = new VisualPoint(i, 0);
-                    if (0 > Field.Y1 && 0 < Field.Y2)
-                    {
-                        Field.Canvas.Children.Add(vpoint.GetEllipse(Brushes.Black));
-                        if (Field.PointVisible)
-                            Field.Canvas.Children.Add(vpoint.GetVisualNumber(i / Field.OneCmScale));
-                    }
-                }
+                    AddYLine(i);
             }
         }
         void DrawLeftY()
@@ -52,16 +43,7 @@ namespace AdvancedCalculator.WPF
             for (double i = 0; i > Field.X1; i -= Field.OneCmScale) //для левых y
             {
                 if (i < Field.X2)
-                {
-                    Field.Canvas.Children.Add(GetLine(i, Axis.AY));
-                    var vpoint = new VisualPoint(i, 0);
-                    if (0 > Field.Y1 && 0 < Field.Y2)
-                    {
-                        Field.Canvas.Children.Add(vpoint.GetEllipse(Brushes.Black));
-                        if (Field.PointVisible)
-                            Field.Canvas.Children.Add(vpoint.GetVisualNumber(i / Field.OneCmScale));
-                    }
-                }
+                    AddYLine(i);
             }
         }
         void DrawBotX()
@@ -69,16 +51,7 @@ namespace AdvancedCalculator.WPF
             for (double i = 0; i < Field.Y2; i += Field.OneCmScale) //для нижних x
             {
                 if (i > Field.Y1)
-                {
-                    Field.Canvas.Children.Add(GetLine(i, Axis.AX));
-                    var vpoint = new VisualPoint(0, i);
-                    if (0 > Field.X1 && 0 < Field.X2)
-                    {
-                        Field.Canvas.Children.Add(vpoint.GetEllipse(Brushes.Black));
-                        if (Field.PointVisible)
-                            if (i != 0) { Field.Canvas.Children.Add(vpoint.GetVisualNumber(-i / Field.OneCmScale)); }
-                    }
-                }
+                    AddXLine(i);
             }
         }
         void DrawUpX()
@@ -86,23 +59,40 @@ namespace AdvancedCalculator.WPF
             for (double i = 0; i > Field.Y1; i -= Field.OneCmScale) //для верхних x
             {
                 if (i < Field.Y2)
-                {
-                    Field.Canvas.Children.Add(GetLine(i, Axis.AX));
-                    var vpoint = new VisualPoint(0, i);
-                    if (0 > Field.X1 && 0 < Field.X2)
-                    {
-                        Field.Canvas.Children.Add(vpoint.GetEllipse(Brushes.Black));
-                        if (Field.PointVisible)
-                            if (i != 0) { Field.Canvas.Children.Add(vpoint.GetVisualNumber(-i / Field.OneCmScale)); }
-                    }
-                }
+                    AddXLine(i);
             }
-
+        }
+        void AddYLine(double i)
+        {
+            Field.Canvas.Children.Add(GetLine(i, Axis.AY));
+            var vpoint = new VisualPoint(i, 0);
+            if (0 > Field.Y1 && 0 < Field.Y2)
+            {
+                if (Field.AxisEllipsesVisible)
+                    Field.Canvas.Children.Add(vpoint.GetEllipse(Brushes.Black));
+                if (Field.AxisPointsVisible)
+                    Field.Canvas.Children.Add(vpoint.GetVisualNumber(i / Field.OneCmScale));
+            }
+        }
+        void AddXLine(double i)
+        {
+            Field.Canvas.Children.Add(GetLine(i, Axis.AX));
+            var vpoint = new VisualPoint(0, i);
+            if (0 > Field.X1 && 0 < Field.X2)
+            {
+                if (Field.AxisEllipsesVisible)
+                    Field.Canvas.Children.Add(vpoint.GetEllipse(Brushes.Black));
+                if (Field.AxisPointsVisible)
+                    if (i != 0) { Field.Canvas.Children.Add(vpoint.GetVisualNumber(-i / Field.OneCmScale)); }
+            }
         }
         Line GetLine(double i, Axis axis)
         {
-            Line line = new Line() { Stroke = Brushes.Gray };
-            if (i == 0) { line.Stroke = Brushes.Black; };
+            Line line = new Line() { Stroke = Brushes.White };
+            if (i == 0) 
+                line.Stroke = Brushes.Black; 
+            else if (Field.GridVisible) 
+                line.Stroke = Brushes.Gray;
             if (axis == Axis.AY)
             {
                 line.X1 = i - Field.X1;
@@ -129,7 +119,7 @@ namespace AdvancedCalculator.WPF
                 {
                     var vpoint = new VisualPoint(calculators[i].X * Field.OneCmScale, -calculators[i].Y * Field.OneCmScale);
                     function.Points.Add(vpoint.GetPointForFunction());
-                    if (Field.FunctionPointVisible) 
+                    if (Field.FunctionPointsVisible) 
                     {
                         Ellipse ellipse = vpoint.GetEllipse(Brushes.Red); 
                         Field.Canvas.Children.Add(ellipse);

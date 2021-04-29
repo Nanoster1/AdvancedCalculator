@@ -28,8 +28,8 @@
                 <TextBox x:Name="tbxStep" Width="Auto" MinWidth="30">0,1</TextBox>
             </StackPanel>
             </Viewbox>
-            <Viewbox Grid.Row="1" MaxHeight="25" MaxWidth="500" MinWidth="300">
-                <StackPanel Orientation="Horizontal"  >
+            <Viewbox Grid.Row="1" MaxHeight="25" MaxWidth="600" MinWidth="300">
+                <StackPanel Orientation="Horizontal">
                     <Button Click="Calculate_Click">Вычислить</Button>
                     <TextBox x:Name="tbScale" 
                              ToolTip="Масштаб"
@@ -42,25 +42,46 @@
                             Click="Center_Click"
                             >В центр
                     </Button>
-                    <CheckBox x:Name="FunctionPointVisible" 
-                              Click="FunctionPointVisible_Click" 
-                              ToolTip="Отображать точки функции">
-                    </CheckBox>
-                    <CheckBox x:Name="PointVisible" 
-                              Click="PointVisible_Click" 
-                              ToolTip="Отображать точки на осях">
-                    </CheckBox>
+                    <Label Background="DarkBlue" Foreground="White" Content="Настройки"></Label>
+                    <ComboBox>
+                        <CheckBox x:Name="FunctionPointsVisible" 
+                              Click="Settings_Click" 
+                              ToolTip="Отображать точки функции"
+                              IsChecked="True">
+                        </CheckBox>
+                        <CheckBox x:Name="AxisPointsVisible" 
+                              Click="Settings_Click" 
+                              ToolTip="Отображать точки на осях"
+                              IsChecked="True">
+                        </CheckBox>
+                        <CheckBox x:Name="GridVisible"
+                              Click="Settings_Click"
+                              ToolTip="Отображать сетку графика"
+                              IsChecked="True">
+                        </CheckBox>
+                        <CheckBox x:Name="AxisEllipsesVisible"
+                                  Click="Settings_Click"
+                                  ToolTip="Отображать точки на графике"
+                                  IsChecked="True">
+                        </CheckBox>
+                    </ComboBox>
+                    <Label x:Name="lblCoords"></Label>
                 </StackPanel>
             </Viewbox>
             <ScrollViewer MaxHeight="100" Grid.Row="2" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
                 <Viewbox>
-                <DataGrid x:Name="Table" 
+                    <DataGrid x:Name="Table" 
                           CanUserResizeColumns="False" 
                           AutoGenerateColumns="True"    
                           VerticalScrollBarVisibility="Auto" 
                           HorizontalScrollBarVisibility="Auto"
                           CanUserSortColumns="False">
-                </DataGrid>
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="X"></DataGridTextColumn>
+                            <DataGridTextColumn Header="Y"></DataGridTextColumn>
+                            <DataGridTextColumn Header="RPN"></DataGridTextColumn>
+                        </DataGrid.Columns>
+                    </DataGrid>
                 </Viewbox>
             </ScrollViewer>
             <Canvas x:Name="Canvas"

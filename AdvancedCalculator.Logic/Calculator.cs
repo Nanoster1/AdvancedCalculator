@@ -13,15 +13,21 @@ namespace AdvancedCalculator.Logic
         public Calculator(string x)
         {
             X = double.Parse(x);
-            RPN.RPNAr[RPN.Index] = X;
+            ReplaceIndexes();
             RPNStr = GetRPNStr();
             Y = GetAnswer();
         }
-        
-        string GetRPNStr()
+        private void ReplaceIndexes()
+        {
+            for (int i = 0; i <= RPN.Indexes.Count; i++)
+            {
+                RPN.RPNAr[RPN.Indexes[i]] = X;
+            }
+        }
+        private string GetRPNStr()
         {
             StringBuilder @string = new StringBuilder();
-            for (int i = RPN.RPNAr.Length - 1; i >= 0; i--)
+            for (int i = RPN.RPNAr.Count - 1; i >= 0; i--)
             {
                 if (RPN.RPNAr[i] is Operation)
                     @string.Append((RPN.RPNAr[i] as Operation).Name + " ");
@@ -30,10 +36,10 @@ namespace AdvancedCalculator.Logic
             }
             return @string.ToString();
         }
-        double GetAnswer()
+        private double GetAnswer()
         {
             Stack<double> calc = new Stack<double>();
-            for (int i = RPN.RPNAr.Length - 1; i >= 0; i--)
+            for (int i = RPN.RPNAr.Count - 1; i >= 0; i--)
             {
                 if (RPN.RPNAr[i] is double)
                     calc.Push(Convert.ToDouble(RPN.RPNAr[i]));
