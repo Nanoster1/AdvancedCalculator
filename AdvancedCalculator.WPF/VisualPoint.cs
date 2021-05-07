@@ -14,7 +14,7 @@ namespace AdvancedCalculator.WPF
     {
         public Point Point { get; private set; } //В пикселях
         public Axis Axis { get; private set; }
-        private Field Field { get; set; }
+        public Field Field { get; private set; }
         public VisualPoint(double x, double y, Field field)
         {
             Point = new Point(x, y);

@@ -51,8 +51,7 @@ namespace AdvancedCalculator.WPF
             {
                 MessageBox.Show("Неверное условие (Проверьте на наличие пробелов и скобочек)");
             }
-        }
-        
+        }       
         private void Field_MouseDown(object sender, MouseButtonEventArgs e)
         {
             StartPoint = Mouse.GetPosition(this);
@@ -81,7 +80,6 @@ namespace AdvancedCalculator.WPF
             canvas.Height = this.ActualHeight - (Row1.ActualHeight + Row2.ActualHeight + Row3.ActualHeight);
             if (InfoWorker != null) { Field.Draw(InfoWorker); }
         }
-
         private void Canvas_MouseWheel(object sender, MouseWheelEventArgs e)
         {
             if (InfoWorker != null)
@@ -97,7 +95,6 @@ namespace AdvancedCalculator.WPF
                 Field.Draw(InfoWorker);
             }
         }
-
         private void Settings_Click(object sender, RoutedEventArgs e)
         {
             Field.FunctionPointsVisible = (bool)functionPointsVisible.IsChecked;
@@ -124,7 +121,6 @@ namespace AdvancedCalculator.WPF
                 MessageBox.Show("Ошибка при выставлении масштаба");
             }
         }
-
         private void ShowDataGrid_Click(object sender, RoutedEventArgs e)
         {
             Table table = new Table(InfoWorker);
