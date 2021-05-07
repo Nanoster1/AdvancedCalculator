@@ -14,14 +14,11 @@ namespace AdvancedCalculator.WPF
     {
         public Point Point { get; private set; } //В пикселях
         public Axis Axis { get; private set; }
-        public VisualPoint(double x, double y)
+        private Field Field { get; set; }
+        public VisualPoint(double x, double y, Field field)
         {
             Point = new Point(x, y);
-        }
-        public VisualPoint(double x, double y, Axis axis)
-        {
-            Point = new Point(x, y);
-            Axis = axis;
+            Field = field;
         }
         public Ellipse GetEllipse(SolidColorBrush brush)
         {
@@ -36,20 +33,26 @@ namespace AdvancedCalculator.WPF
                 Fill = brush,
                 ToolTip = $"X:{x} Y:{y}"
             };
+            ellipse.MouseEnter += MouseEnterEllipse;
+            ellipse.MouseLeave += MouseLeaveEllipse;
             Canvas.SetLeft(ellipse, Point.X - Field.X1 - Field.EllipseScale / 2);
             Canvas.SetTop(ellipse, Point.Y - Field.Y1 - Field.EllipseScale / 2);
             return ellipse;
         }
-        //private void MouseEnterEllipse(object sender, MouseEventArgs e)
-        //{
-        //    ellipse.Width = Field.EllipseScale * 2;
-        //    ellipse.Height = Field.EllipseScale * 2;
-        //}
-        //private void MousLeaveEllipse(Ellipse ellipse)
-        //{
-        //    ellipse.Width = Field.EllipseScale;
-        //    ellipse.Height = Field.EllipseScale;
-        //}
+        private void MouseEnterEllipse(object sender, MouseEventArgs e)
+        {
+            (sender as Ellipse).Width = Field.EllipseScale * 2;
+            (sender as Ellipse).Height = Field.EllipseScale * 2;
+            Canvas.SetLeft((sender as Ellipse), Point.X - Field.X1 - Field.EllipseScale);
+            Canvas.SetTop((sender as Ellipse), Point.Y - Field.Y1 - Field.EllipseScale);
+        }
+        private void MouseLeaveEllipse(object sender, MouseEventArgs e)
+        {
+            (sender as Ellipse).Width = Field.EllipseScale;
+            (sender as Ellipse).Height = Field.EllipseScale;
+            Canvas.SetLeft((sender as Ellipse), Point.X - Field.X1 - Field.EllipseScale / 2);
+            Canvas.SetTop((sender as Ellipse), Point.Y - Field.Y1 - Field.EllipseScale / 2);
+        }
         public Point GetPointForFunction()
         {
             return new Point()

@@ -5,20 +5,15 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:AdvancedCalculator.WPF"
         mc:Ignorable="d"
-        Title="MainWindow" Height="600" Width="500" Name="Window" SizeChanged="Window_SizeChanged">
-    <Border Background="White"
-        BorderBrush="Blue"
-        BorderThickness="2"
-        CornerRadius="5"
-        Padding="1">
-        <Grid ShowGridLines="False">
-            <Grid.RowDefinitions>
-                <RowDefinition x:Name="Row1" Height="Auto"></RowDefinition>
-                <RowDefinition x:Name="Row2" Height="Auto"></RowDefinition>
-                <RowDefinition x:Name="Row3" Height="Auto"></RowDefinition>
-                <RowDefinition x:Name="Grid3" Height="*"></RowDefinition>
-            </Grid.RowDefinitions>
-            <Viewbox MaxHeight="200" MaxWidth="500">
+        Title="MainWindow" Height="600" Width="500" SizeChanged="Window_SizeChanged">
+    <Grid ShowGridLines="False">
+        <Grid.RowDefinitions>
+            <RowDefinition x:Name="Row1" Height="Auto"></RowDefinition>
+            <RowDefinition x:Name="Row2" Height="Auto"></RowDefinition>
+            <RowDefinition x:Name="Row3" Height="Auto"></RowDefinition>
+            <RowDefinition x:Name="Grid3" Height="*"></RowDefinition>
+        </Grid.RowDefinitions>
+        <Viewbox MaxHeight="200" MaxWidth="500">
             <StackPanel Orientation="Horizontal">
                 <Label>y =</Label>
                 <TextBox x:Name="tbxExpression" Width="Auto" MinWidth="112">x^2</TextBox>
@@ -27,64 +22,55 @@
                 <Label>Шаг X =</Label>
                 <TextBox x:Name="tbxStep" Width="Auto" MinWidth="30">0,1</TextBox>
             </StackPanel>
-            </Viewbox>
-            <Viewbox Grid.Row="1" MaxHeight="25" MaxWidth="600" MinWidth="300">
-                <StackPanel Orientation="Horizontal">
-                    <Button Click="Calculate_Click">Вычислить</Button>
-                    <TextBox x:Name="tbScale" 
+        </Viewbox>
+        <Viewbox Grid.Row="1" MaxHeight="25" MaxWidth="600" MinWidth="300">
+            <StackPanel Orientation="Horizontal">
+                <Button Click="Calculate_Click">Вычислить</Button>
+                <TextBox x:Name="tbScale" 
                              ToolTip="Масштаб"
                              Text="       ">
-                    </TextBox>
-                    <Button ToolTip="Установить заданный масштаб"
+                </TextBox>
+                <Button ToolTip="Установить заданный масштаб"
                             Click="SetScale_Click">Установить</Button>
-                    <Button x:Name="btnCenter" 
+                <Button x:Name="btnCenter" 
                             Visibility="Collapsed"
                             Click="Center_Click"
                             >В центр
-                    </Button>
-                    <Label Background="DarkBlue" Foreground="White" Content="Настройки"></Label>
-                    <ComboBox>
-                        <CheckBox x:Name="FunctionPointsVisible" 
+                </Button>
+                <Label Background="DarkBlue" Foreground="White" Content="Настройки"/>
+                <ComboBox>
+                    <CheckBox x:Name="functionPointsVisible" 
                               Click="Settings_Click" 
                               ToolTip="Отображать точки функции"
                               IsChecked="True">
-                        </CheckBox>
-                        <CheckBox x:Name="AxisPointsVisible" 
+                    </CheckBox>
+                    <CheckBox x:Name="axisPointsVisible" 
                               Click="Settings_Click" 
                               ToolTip="Отображать точки на осях"
                               IsChecked="True">
-                        </CheckBox>
-                        <CheckBox x:Name="GridVisible"
+                    </CheckBox>
+                    <CheckBox x:Name="gridVisible"
                               Click="Settings_Click"
                               ToolTip="Отображать сетку графика"
                               IsChecked="True">
-                        </CheckBox>
-                        <CheckBox x:Name="AxisEllipsesVisible"
+                    </CheckBox>
+                    <CheckBox x:Name="axisEllipsesVisible"
                                   Click="Settings_Click"
                                   ToolTip="Отображать точки на графике"
                                   IsChecked="True">
-                        </CheckBox>
-                    </ComboBox>
-                    <Label x:Name="lblCoords"></Label>
-                </StackPanel>
-            </Viewbox>
-            <ScrollViewer MaxHeight="100" Grid.Row="2" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
-                <Viewbox>
-                    <DataGrid x:Name="Table" 
-                          CanUserResizeColumns="False" 
-                          AutoGenerateColumns="True"    
-                          VerticalScrollBarVisibility="Auto" 
-                          HorizontalScrollBarVisibility="Auto"
-                          CanUserSortColumns="False">
-                        <DataGrid.Columns>
-                            <DataGridTextColumn Header="X"></DataGridTextColumn>
-                            <DataGridTextColumn Header="Y"></DataGridTextColumn>
-                            <DataGridTextColumn Header="RPN"></DataGridTextColumn>
-                        </DataGrid.Columns>
-                    </DataGrid>
-                </Viewbox>
-            </ScrollViewer>
-            <Canvas x:Name="Canvas"
+                    </CheckBox>
+                </ComboBox>
+                <Label x:Name="lblCoords"/>
+            </StackPanel>
+        </Viewbox>
+        <Viewbox Grid.Row="2"
+                     MaxHeight="25">
+            <Button x:Name="btnShowDataGrid"
+                        Click="ShowDataGrid_Click"
+                        Visibility="Collapsed">Показать данные
+            </Button>
+        </Viewbox>
+        <Canvas x:Name="canvas"
                     Grid.Row="3"
                     Background="White"
                     Width="400"
@@ -92,7 +78,6 @@
                     MouseDown="Field_MouseDown"
                     MouseMove="Field_MouseMove"
                     MouseWheel="Canvas_MouseWheel">
-            </Canvas>
-        </Grid>
-    </Border>
+        </Canvas>
+    </Grid>
 </Window>

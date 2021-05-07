@@ -13,6 +13,7 @@ namespace AdvancedCalculator.Logic
         {
             List<object> expression = ParseExpression(text);
             RPNAr = ParseInRPN(expression).ToList();
+            Indexes.Clear();
             GetIndexes();
         }
         static void GetIndexes()
