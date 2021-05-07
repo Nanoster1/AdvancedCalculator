@@ -17,8 +17,10 @@ namespace AdvancedCalculator.WPF
         public static double EllipseScale { get { return Scale * 0.08; } }
         public static double OneCmScale { get { return Scale * 0.4; } }
         public static double FontScale { get { return Scale * 0.1; } }
-        public static bool FunctionPointVisible { get; set; } = false;
-        public static bool PointVisible { get; set; } = false;
+        public static bool FunctionPointsVisible { get; set; } = true;
+        public static bool AxisPointsVisible { get; set; } = true;
+        public static bool GridVisible { get; set; } = true;
+        public static bool AxisEllipsesVisible { get; set; } = true;
         public static void SetCanvas(Canvas canvas)
         {
             if (Canvas == null)

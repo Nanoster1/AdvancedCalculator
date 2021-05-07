@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Shapes;
 
@@ -29,8 +30,8 @@ namespace AdvancedCalculator.WPF
             if (y == -0) { y = 0; }
             Ellipse ellipse = new Ellipse
             {
-                Width = 0.08 * Field.Scale,
-                Height = 0.08 * Field.Scale,
+                Width = Field.EllipseScale,
+                Height = Field.EllipseScale,
                 Stroke = Brushes.Black,
                 Fill = brush,
                 ToolTip = $"X:{x} Y:{y}"
@@ -39,6 +40,16 @@ namespace AdvancedCalculator.WPF
             Canvas.SetTop(ellipse, Point.Y - Field.Y1 - Field.EllipseScale / 2);
             return ellipse;
         }
+        //private void MouseEnterEllipse(object sender, MouseEventArgs e)
+        //{
+        //    ellipse.Width = Field.EllipseScale * 2;
+        //    ellipse.Height = Field.EllipseScale * 2;
+        //}
+        //private void MousLeaveEllipse(Ellipse ellipse)
+        //{
+        //    ellipse.Width = Field.EllipseScale;
+        //    ellipse.Height = Field.EllipseScale;
+        //}
         public Point GetPointForFunction()
         {
             return new Point()
