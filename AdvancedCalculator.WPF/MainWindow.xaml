@@ -44,22 +44,22 @@
                     </Button>
                     <Label Background="DarkBlue" Foreground="White" Content="Настройки"></Label>
                     <ComboBox>
-                        <CheckBox x:Name="FunctionPointsVisible" 
+                        <CheckBox x:Name="functionPointsVisible" 
                               Click="Settings_Click" 
                               ToolTip="Отображать точки функции"
                               IsChecked="True">
                         </CheckBox>
-                        <CheckBox x:Name="AxisPointsVisible" 
+                        <CheckBox x:Name="axisPointsVisible" 
                               Click="Settings_Click" 
                               ToolTip="Отображать точки на осях"
                               IsChecked="True">
                         </CheckBox>
-                        <CheckBox x:Name="GridVisible"
+                        <CheckBox x:Name="gridVisible"
                               Click="Settings_Click"
                               ToolTip="Отображать сетку графика"
                               IsChecked="True">
                         </CheckBox>
-                        <CheckBox x:Name="AxisEllipsesVisible"
+                        <CheckBox x:Name="axisEllipsesVisible"
                                   Click="Settings_Click"
                                   ToolTip="Отображать точки на графике"
                                   IsChecked="True">
@@ -68,23 +68,14 @@
                     <Label x:Name="lblCoords"></Label>
                 </StackPanel>
             </Viewbox>
-            <ScrollViewer MaxHeight="100" Grid.Row="2" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
-                <Viewbox>
-                    <DataGrid x:Name="Table" 
-                          CanUserResizeColumns="False" 
-                          AutoGenerateColumns="True"    
-                          VerticalScrollBarVisibility="Auto" 
-                          HorizontalScrollBarVisibility="Auto"
-                          CanUserSortColumns="False">
-                        <DataGrid.Columns>
-                            <DataGridTextColumn Header="X"></DataGridTextColumn>
-                            <DataGridTextColumn Header="Y"></DataGridTextColumn>
-                            <DataGridTextColumn Header="RPN"></DataGridTextColumn>
-                        </DataGrid.Columns>
-                    </DataGrid>
-                </Viewbox>
-            </ScrollViewer>
-            <Canvas x:Name="Canvas"
+            <Viewbox Grid.Row="2"
+                     MaxHeight="25">
+                <Button x:Name="btnShowDataGrid"
+                        Click="ShowDataGrid_Click"
+                        Visibility="Collapsed">Показать данные
+                </Button>
+            </Viewbox>
+            <Canvas x:Name="canvas"
                     Grid.Row="3"
                     Background="White"
                     Width="400"

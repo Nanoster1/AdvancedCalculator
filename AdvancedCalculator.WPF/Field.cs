@@ -6,25 +6,24 @@ using System.Windows;
 
 namespace AdvancedCalculator.WPF
 {
-    public static class Field
+    public class Field
     {
-        public static Canvas Canvas { get; private set; }
-        public static double X1 { get; set; }
-        public static double Y1 { get; set; }
-        public static double X2 { get { return X1 + Canvas.Width; } }
-        public static double Y2 { get { return Y1 + Canvas.Height; } }
-        public static double Scale { get; set; } = 100;
-        public static double EllipseScale { get { return Scale * 0.08; } }
-        public static double OneCmScale { get { return Scale * 0.4; } }
-        public static double FontScale { get { return Scale * 0.1; } }
-        public static bool FunctionPointsVisible { get; set; } = true;
-        public static bool AxisPointsVisible { get; set; } = true;
-        public static bool GridVisible { get; set; } = true;
-        public static bool AxisEllipsesVisible { get; set; } = true;
-        public static void SetCanvas(Canvas canvas)
+        public Field(Canvas canvas)
         {
-            if (Canvas == null)
-                Canvas = canvas;
+            Canvas = canvas;
         }
+        public Canvas Canvas { get; private set; }
+        public double X1 { get; set; }
+        public double Y1 { get; set; }
+        public double X2 { get { return X1 + Canvas.Width; } }
+        public double Y2 { get { return Y1 + Canvas.Height; } }
+        public double Scale { get; set; } = 100;
+        public double EllipseScale { get { return Scale * 0.08; } }
+        public double OneCmScale { get { return Scale * 0.4; } }
+        public double FontScale { get { return Scale * 0.1; } }
+        public bool FunctionPointsVisible { get; set; } = true;
+        public bool AxisPointsVisible { get; set; } = true;
+        public bool GridVisible { get; set; } = true;
+        public bool AxisEllipsesVisible { get; set; } = true;
     }
 }

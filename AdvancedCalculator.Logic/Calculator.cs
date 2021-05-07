@@ -19,7 +19,7 @@ namespace AdvancedCalculator.Logic
         }
         private void ReplaceIndexes()
         {
-            for (int i = 0; i <= RPN.Indexes.Count; i++)
+            for (int i = 0; i < RPN.Indexes.Count; i++)
             {
                 RPN.RPNAr[RPN.Indexes[i]] = X;
             }
