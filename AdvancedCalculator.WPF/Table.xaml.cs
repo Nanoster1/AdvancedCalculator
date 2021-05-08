@@ -21,8 +21,33 @@ namespace AdvancedCalculator.WPF
         public Table(InfoWorker infoWorker)
         {
             InitializeComponent();
-            dataGrid.ItemsSource = infoWorker.Calculators;
-           
+            calculators = infoWorker.Calculators;
+            SetItemsSourse();
+        }
+        private readonly List<Calculator> calculators;
+        private int Start { get; set; } = 0;
+        private int End { get { return Start + 10; } }
+        private void Table_MouseWheel(object sender, MouseWheelEventArgs e)
+        {
+            if (e.Delta > 0)
+            {
+                if(Start > 0) Start--;
+                SetItemsSourse();
+            }
+            else
+            {
+                if (Start < calculators.Count - 10) Start++;
+                SetItemsSourse();
+            }
+        }
+        private void SetItemsSourse()
+        {
+            List<Calculator> itemsSourse = new List<Calculator>();
+            for (int i = Start; i < End; i++)
+            {
+                itemsSourse.Add(calculators[i]);
+            }
+            dataGrid.ItemsSource = itemsSourse;
         }
     }
 }

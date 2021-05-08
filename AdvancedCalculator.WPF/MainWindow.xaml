@@ -71,13 +71,12 @@
             </Button>
         </Viewbox>
         <Canvas x:Name="canvas"
-                    Grid.Row="3"
-                    Background="White"
-                    Width="400"
-                    Height="400"
-                    MouseDown="Field_MouseDown"
-                    MouseMove="Field_MouseMove"
-                    MouseWheel="Canvas_MouseWheel">
+                Grid.Row="3"
+                Background="White"
+                Width="400"
+                Height="400"
+                MouseMove="Field_MouseMove"
+                MouseWheel="Canvas_MouseWheel">
         </Canvas>
     </Grid>
 </Window>
