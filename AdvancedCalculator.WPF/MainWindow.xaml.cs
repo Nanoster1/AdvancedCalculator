@@ -48,19 +48,20 @@ namespace AdvancedCalculator.WPF
                 MessageBox.Show("Неверное условие (Проверьте на наличие пробелов и скобочек)");
             }
         }
-        private void Field_MouseDown(object sender, MouseButtonEventArgs e)
-        {
-            StartPoint = Mouse.GetPosition(this);
-        }
         private void Field_MouseMove(object sender, MouseEventArgs e)
         {
-            if (e.LeftButton == MouseButtonState.Pressed)
+
+            if (e.LeftButton != MouseButtonState.Pressed)
+            {
+                StartPoint = Mouse.GetPosition(this);
+            }
+            else
             {
                 var moveChange = Mouse.GetPosition(this) - StartPoint;
+                StartPoint = Mouse.GetPosition(this);
                 Field.X1 -= moveChange.X;
                 Field.Y1 -= moveChange.Y;
                 if (InfoWorker != null) { FunctionDrawer.Draw(InfoWorker, Field); }
-                StartPoint = Mouse.GetPosition(this);
             }
             SetLblCoords();
         }

@@ -5,17 +5,14 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:AdvancedCalculator.WPF"
         mc:Ignorable="d"
-        Title="Table" Height="450" Width="800">
+        Title="Table" Height="450" Width="800" MouseWheel="Table_MouseWheel">
     <Grid>
-        <ScrollViewer HorizontalScrollBarVisibility="Auto"
-                      VerticalScrollBarVisibility="Auto">
-            <Viewbox>
-                <DataGrid x:Name="dataGrid"
-                    CanUserResizeColumns="False"
-                    CanUserResizeRows="False"
-                    CanUserReorderColumns="False">
-                </DataGrid>
-            </Viewbox>
-        </ScrollViewer>
+        <Viewbox>
+            <DataGrid x:Name="dataGrid"
+                CanUserResizeColumns="False"
+                CanUserResizeRows="False"
+                CanUserReorderColumns="False">
+            </DataGrid>
+        </Viewbox>
     </Grid>
 </Window>
