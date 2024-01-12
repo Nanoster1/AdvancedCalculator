@@ -1,15 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Shapes;
 
 namespace AdvancedCalculator.WPF
 {
-    public enum Axis { AX, AY}
+    public enum Axis { AX, AY }
     public class VisualPoint
     {
         public Point Point { get; private set; } //В пикселях
@@ -58,13 +55,13 @@ namespace AdvancedCalculator.WPF
                 Y = Point.Y - Field.Y1
             };
         }
-       public Label GetVisualNumber(double number)
-       {
+        public Label GetVisualNumber(double number)
+        {
             Label num = new Label { FontSize = Field.FontScale };
             num.Content = Convert.ToInt32(number);
             Canvas.SetLeft(num, Point.X - Field.X1 - num.ActualWidth + 4 / 2);
             Canvas.SetTop(num, Point.Y - Field.Y1 - 2);
             return num;
-       }
+        }
     }
 }

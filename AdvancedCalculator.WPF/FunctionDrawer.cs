@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Media;
+﻿using System.Windows.Media;
 using System.Windows.Shapes;
+
 using AdvancedCalculator.Logic;
 
 namespace AdvancedCalculator.WPF
@@ -89,9 +85,9 @@ namespace AdvancedCalculator.WPF
         Line GetLine(double i, Axis axis)
         {
             Line line = new Line() { Stroke = Brushes.White };
-            if (i == 0) 
-                line.Stroke = Brushes.Black; 
-            else if (Field.GridVisible) 
+            if (i == 0)
+                line.Stroke = Brushes.Black;
+            else if (Field.GridVisible)
                 line.Stroke = Brushes.Gray;
             if (axis == Axis.AY)
             {
@@ -101,7 +97,7 @@ namespace AdvancedCalculator.WPF
                 line.Y2 = Field.Canvas.Height;
             }
             else
-            {  
+            {
                 line.X1 = 0;
                 line.X2 = Field.Canvas.Width;
                 line.Y1 = i - Field.Y1;
@@ -119,9 +115,9 @@ namespace AdvancedCalculator.WPF
                 {
                     var vpoint = new VisualPoint(calculators[i].X * Field.OneCmScale, -calculators[i].Y * Field.OneCmScale);
                     function.Points.Add(vpoint.GetPointForFunction());
-                    if (Field.FunctionPointsVisible) 
+                    if (Field.FunctionPointsVisible)
                     {
-                        Ellipse ellipse = vpoint.GetEllipse(Brushes.Red); 
+                        Ellipse ellipse = vpoint.GetEllipse(Brushes.Red);
                         Field.Canvas.Children.Add(ellipse);
                     }
                     if (!CheckOnlyXBorder(calculators[i - 1].X)) //Если x выходит за границы, то мы обрываем проверку ост. x

@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace AdvancedCalculator.Logic
 {
@@ -67,7 +65,7 @@ namespace AdvancedCalculator.Logic
         public override double Calculate(double[] @params) { return Math.Tan(@params[0]); }
         public override int Prior => 1;
     }
-    class Rank: Operation
+    class Rank : Operation
     {
         public override string Name => "^";
         public override int CountParams => 2;

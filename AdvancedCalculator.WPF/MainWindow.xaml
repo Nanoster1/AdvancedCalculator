@@ -68,22 +68,6 @@
                     <Label x:Name="lblCoords"></Label>
                 </StackPanel>
             </Viewbox>
-            <ScrollViewer MaxHeight="100" Grid.Row="2" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
-                <Viewbox>
-                    <DataGrid x:Name="Table" 
-                          CanUserResizeColumns="False" 
-                          AutoGenerateColumns="True"    
-                          VerticalScrollBarVisibility="Auto" 
-                          HorizontalScrollBarVisibility="Auto"
-                          CanUserSortColumns="False">
-                        <DataGrid.Columns>
-                            <DataGridTextColumn Header="X"></DataGridTextColumn>
-                            <DataGridTextColumn Header="Y"></DataGridTextColumn>
-                            <DataGridTextColumn Header="RPN"></DataGridTextColumn>
-                        </DataGrid.Columns>
-                    </DataGrid>
-                </Viewbox>
-            </ScrollViewer>
             <Canvas x:Name="Canvas"
                     Grid.Row="3"
                     Background="White"

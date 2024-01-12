@@ -17,6 +17,7 @@ namespace AdvancedCalculator.Logic
         }
         static void GetIndexes()
         {
+            Indexes.Clear();
             while (RPNAr.Contains("x"))
             {
                 int i = RPNAr.IndexOf("x");
@@ -98,34 +99,34 @@ namespace AdvancedCalculator.Logic
             Operation op = null;
             switch (sym.ToString())
             {
-                case ("+"):
+                case "+":
                     op = new Plus();
                     break;
-                case ("-"):
+                case "-":
                     op = new Minus();
                     break;
-                case ("*"):
+                case "*":
                     op = new Mult();
                     break;
-                case ("/"):
+                case "/":
                     op = new Div();
                     break;
-                case ("log"):
+                case "log":
                     op = new Log();
                     break;
-                case ("sin"):
+                case "sin":
                     op = new Sin();
                     break;
-                case ("cos"):
+                case "cos":
                     op = new Cos();
                     break;
-                case ("tg"):
+                case "tg":
                     op = new Tan();
                     break;
-                case ("^"):
+                case "^":
                     op = new Rank();
                     break;
-                case ("sqrt"):
+                case "sqrt":
                     op = new Sqrt();
                     break;
             }
@@ -169,11 +170,11 @@ namespace AdvancedCalculator.Logic
                 {
                     switch ((expression[i] as Operation).Prior)
                     {
-                        case (1):
+                        case 1:
                             texas.Push(expression[i]);
                             i++;
                             break;
-                        case (2):
+                        case 2:
                             if (!(texas.Peek() is Operation) || (texas.Peek() as Operation).Prior == 3)
                             {
                                 texas.Push(expression[i]);
@@ -182,7 +183,7 @@ namespace AdvancedCalculator.Logic
                             else
                                 california.Push(texas.Pop());
                             break;
-                        case (3):
+                        case 3:
                             if (texas.Peek() is Operation)
                                 california.Push(texas.Pop());
                             else

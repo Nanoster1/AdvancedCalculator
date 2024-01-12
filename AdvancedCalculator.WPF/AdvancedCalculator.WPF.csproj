@@ -1,15 +1,14 @@
-﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <TargetFramework>net8.0-windows</TargetFramework>
     <UseWPF>true</UseWPF>
+    <SelfContained>true</SelfContained>
   </PropertyGroup>
 
   <ItemGroup>
-    <Reference Include="AdvancedCalculator.Logic">
-      <HintPath>..\AdvancedCalculator.Logic\bin\Debug\netcoreapp3.1\AdvancedCalculator.Logic.dll</HintPath>
-    </Reference>
+    <ProjectReference Include="..\AdvancedCalculator.Logic\AdvancedCalculator.Logic.csproj" />
   </ItemGroup>
 
 </Project>

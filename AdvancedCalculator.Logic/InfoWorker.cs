@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace AdvancedCalculator.Logic
 {
@@ -13,17 +12,17 @@ namespace AdvancedCalculator.Logic
             double dStep = double.Parse(step);
             Range = SetRange(range, dStep);
             Calculators = SetCalcs(expression);
-        } 
+        }
         List<Calculator> SetCalcs(string expression)
         {
-                List<Calculator> calculators = new List<Calculator>();
-                RPN.GetRPN($"⊥{expression}⊥");
-                for (int i = 0; i < Range.Count; i++)
-                {
-                    Calculator calculator = new Calculator(Range[i].ToString());
-                    calculators.Add(calculator);
-                }
-                return calculators;
+            List<Calculator> calculators = new List<Calculator>();
+            RPN.GetRPN($"⊥{expression}⊥");
+            for (int i = 0; i < Range.Count; i++)
+            {
+                Calculator calculator = new Calculator(Range[i].ToString());
+                calculators.Add(calculator);
+            }
+            return calculators;
         }
         List<double> SetRange(string range, double step)
         {

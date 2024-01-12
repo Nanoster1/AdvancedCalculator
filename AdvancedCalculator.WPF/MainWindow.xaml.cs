@@ -1,18 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Controls.Primitives;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
+
 using AdvancedCalculator.Logic;
 
 namespace AdvancedCalculator.WPF
@@ -38,10 +28,9 @@ namespace AdvancedCalculator.WPF
         }
         private void Calculate_Click(object sender, RoutedEventArgs e)
         {
-            try 
+            try
             {
                 InfoWorker = new InfoWorker(tbxExpression.Text, tbxRange.Text, tbxStep.Text);
-           
                 FunctionDrawer = new FunctionDrawer(InfoWorker);
                 FunctionDrawer.Draw();
                 btnCenter.Visibility = Visibility.Visible;
@@ -104,7 +93,7 @@ namespace AdvancedCalculator.WPF
             Field.GridVisible = (bool)GridVisible.IsChecked;
             Field.AxisEllipsesVisible = (bool)AxisEllipsesVisible.IsChecked;
             if (InfoWorker != null) { FunctionDrawer.Draw(); }
-        } 
+        }
         private void SetScale_Click(object sender, RoutedEventArgs e)
         {
             try
